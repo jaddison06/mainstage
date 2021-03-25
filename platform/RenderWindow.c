@@ -1,24 +1,19 @@
+// LINKWITHLIB SDL2
+
 #include "SDL2/SDL.h"
 #include "PlatformErrorCodes.h"
 #include <stdio.h>
 #include <stdbool.h>
 
 typedef struct {
-    int r, g, b;
-} Colour;
-
-typedef struct {
     SDL_Window *win;
     SDL_Renderer *ren;
-    Colour backgroundColour;
     int errorCode;
+
+    int backgroundRed, backgroundGreen, backgroundBlue;
 } RenderWindow;
 
-typedef struct {
-    int x, y;
-} Coord2d;
-
-RenderWindow LogSDLError(RenderWindow *win, int exitCode) {
+RenderWindow *LogSDLError(RenderWindow *win, int exitCode) {
     printf("SDL error: %s\n", SDL_GetError());
     if (win->win != NULL) {
         SDL_DestroyWindow(win->win);
@@ -27,89 +22,99 @@ RenderWindow LogSDLError(RenderWindow *win, int exitCode) {
         SDL_DestroyRenderer(win->ren);
     }
     SDL_Quit();
-    RenderWindow out = {
-        errorCode: exitCode
-    };
-    return out;
+
+    win->errorCode = exitCode;
+    return win;
 }
 
-RenderWindow InitRenderWindow(const char *title, int width, int height, Colour backgroundColour) {
-    RenderWindow out;
+void* InitRenderWindow(/*const char *title, */int width, int height, int backgroundRed, int backgroundGreen, int backgroundBlue) {
+    RenderWindow* out = (RenderWindow *) malloc(sizeof(RenderWindow));
+    const char *title = "test";
+    
     if (SDL_Init(SDL_INIT_VIDEO) != 0) {
-        return LogSDLError(&out, SDL_InitVideo_Fail);
+        return LogSDLError(out, SDL_InitVideo_Fail);
     }
-    out.win = SDL_CreateWindow(title, 100, 100, width, height, SDL_WINDOW_SHOWN | SDL_WINDOW_RESIZABLE);
-    if (out.win == NULL) {
-        return LogSDLError(&out, SDL_CreateWindow_Fail);
+    out->win = SDL_CreateWindow(title, 100, 100, width, height, SDL_WINDOW_SHOWN | SDL_WINDOW_RESIZABLE);
+    if (out->win == NULL) {
+        return LogSDLError(out, SDL_CreateWindow_Fail);
     }
-    out.ren = SDL_CreateRenderer(out.win, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
-    if (out.ren == NULL) {
-        return LogSDLError(&out, SDL_CreateRenderer_Fail);
+    out->ren = SDL_CreateRenderer(out->win, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
+    if (out->ren == NULL) {
+        return LogSDLError(out, SDL_CreateRenderer_Fail);
     }
 
-    out.backgroundColour = backgroundColour;
+    out->backgroundRed = backgroundRed;
+    out->backgroundGreen = backgroundGreen;
+    out->backgroundBlue = backgroundBlue;
+
+    out->errorCode = Success;
 
     return out;
 }
 
-void DestroyRenderWindow(RenderWindow win) {
-    SDL_DestroyRenderer(win.ren);
-    SDL_DestroyWindow(win.win);
+void DestroyRenderWindow(RenderWindow *win) {
+    SDL_DestroyRenderer(win->ren);
+    SDL_DestroyWindow(win->win);
     SDL_Quit();
+    free(win);
 }
 
-void SetColour(RenderWindow win, Colour colour) {
-    SDL_SetRenderDrawColor(win.ren, colour.r, colour.g, colour.b, SDL_ALPHA_OPAQUE);
+int GetErrorCode(RenderWindow *win) {
+    return win->errorCode;
 }
 
-void Flush(RenderWindow win) {
-    SDL_RenderPresent(win.ren);
-    SetColour(win, win.backgroundColour);
-    SDL_RenderClear(win.ren);
+void SetColour(RenderWindow *win, int r, int g, int b) {
+    SDL_SetRenderDrawColor(win->ren, r, g, b, SDL_ALPHA_OPAQUE);
 }
 
-void SetFullscreen(RenderWindow win, bool enable) {
+void Flush(RenderWindow *win) {
+    SDL_RenderPresent(win->ren);
+    SetColour(win, win->backgroundRed, win->backgroundGreen, win->backgroundBlue);
+    SDL_RenderClear(win->ren);
+}
+
+void SetFullscreen(RenderWindow *win, bool enable) {
     if (enable) {
-        SDL_SetWindowFullscreen(win.win, SDL_WINDOW_FULLSCREEN);
+        SDL_SetWindowFullscreen(win->win, SDL_WINDOW_FULLSCREEN);
     } else {
-        SDL_SetWindowFullscreen(win.win, 0);
+        SDL_SetWindowFullscreen(win->win, 0);
     }
 }
 
-void DrawPoint(RenderWindow win, Coord2d location) {
-    SDL_RenderDrawPoint(win.ren, location.x, location.y);
+void DrawPoint(RenderWindow *win, int x, int y) {
+    SDL_RenderDrawPoint(win->ren, x, y);
 }
 
-void DrawLine(RenderWindow win, Coord2d start, Coord2d end) {
-    SDL_RenderDrawLine(win.ren, start.x, start.y, end.x, end.y);
+void DrawLine(RenderWindow *win, int x1, int y1, int x2, int y2) {
+    SDL_RenderDrawLine(win->ren, x1, y1, x2, y2);
 }
 
-SDL_Rect GetSDLRect(Coord2d topLeft, Coord2d bottomRight) {
+SDL_Rect GetSDLRect(int x1, int y1, int x2, int y2) {
     SDL_Rect out = {
-        x: topLeft.x,
-        y: topLeft.y,
-        w: bottomRight.x - topLeft.x,
-        h: bottomRight.y - topLeft.y
+        x: x1,
+        y: x2,
+        w: x2 - x1,
+        h: y2 - y1
     };
     return out;
 }
 
-void DrawRect(RenderWindow win, int x, int y, int w, int h) {
+void DrawRect(RenderWindow *win, int x, int y, int w, int h) {
     SDL_Rect rect = {
         x: x,
         y: y,
         w: w,
         h: h
     };
-    SDL_RenderDrawRect(win.ren, &rect);
+    SDL_RenderDrawRect(win->ren, &rect);
 }
 
-void FillRect(RenderWindow win, int x, int y, int w, int h) {
+void FillRect(RenderWindow *win, int x, int y, int w, int h) {
     SDL_Rect rect = {
         x: x,
         y: y,
         w: w,
         h: h
     };
-    SDL_RenderFillRect(win.ren, &rect);
+    SDL_RenderFillRect(win->ren, &rect);
 }

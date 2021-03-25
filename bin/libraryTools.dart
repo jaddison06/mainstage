@@ -17,6 +17,6 @@ ffi.DynamicLibrary getLibrary(String name) {
   return ffi.DynamicLibrary.open(lib_path);
 }
 
-ffi.Pointer<ffi.NativeFunction<T Function()>> lookup<T extends ffi.NativeType>(ffi.DynamicLibrary lib, String name) {
-  return lib.lookup<ffi.NativeFunction<T Function()>>(name);
+ffi.Pointer<ffi.NativeFunction<ffiReturnType>> lookup<ffiReturnType extends ffi.NativeType Function()>(ffi.DynamicLibrary lib, String name) {
+  return lib.lookup<ffi.NativeFunction<ffiReturnType>>(name);
 }

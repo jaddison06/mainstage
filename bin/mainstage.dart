@@ -1,10 +1,37 @@
-import 'dart:ffi' as ffi;
+import 'dart:ffi';
 import 'libraryTools.dart';
 import 'dart:io';
 
+void testRenderWindow() {
+  final lib = getLibrary('RenderWindow.c');
+  final init = lib.lookupFunction<Pointer<Void> Function(Int32, Int32, Int32, Int32, Int32), Pointer<Void> Function(int, int, int, int, int)>('InitRenderWindow');
+  final destroy = lib.lookupFunction<Void Function(Pointer<Void>), void Function(Pointer<Void>)>('DestroyRenderWindow');
+  final errorCode = lib.lookupFunction<Int32 Function(Pointer<Void>), int Function(Pointer<Void>)>('GetErrorCode');
+  final flush = lib.lookupFunction<Void Function(Pointer<Void>), void Function(Pointer<Void>)>('Flush');
+  final setColour = lib.lookupFunction<Void Function(Pointer<Void>, Int32, Int32, Int32), void Function(Pointer<Void>, int, int, int)>('SetColour');
+  final fillRect = lib.lookupFunction<Void Function(Pointer<Void>, Int32, Int32, Int32, Int32), void Function(Pointer<Void>, int, int, int, int)>('FillRect');
+  
+  final window = init(500, 500, 0, 0, 255);
+  final code = errorCode(window);
+  if (code != 0) {
+    print('RenderWindow init failed w/ error code $code');
+    destroy(window);
+    return;
+  }
+  
+  setColour(window, 255, 255, 0);
+  fillRect(window, 20, 20, 50, 50);
+  flush(window);
+  sleep(Duration(seconds: 3));
+  destroy(window);
+
+}
+
 void main() {
   final lib = getLibrary('Test.c');
-  final void Function() hello = lookup<ffi.Void>(lib, 'Test').asFunction();
+  final hello = lookup<Void Function()>(lib, 'Test').asFunction<void Function()>();
   hello();
+
+  testRenderWindow();
 
 }
