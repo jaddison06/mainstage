@@ -1,10 +1,10 @@
 import 'dart:ffi' as ffi;
-import 'getLibrary.dart';
+import 'libraryTools.dart';
+import 'dart:io';
 
 void main() {
-  final lib = ffi.DynamicLibrary.open(getLibrary('Test.c'));
-  final void Function() hello = lib
-    .lookup<ffi.NativeFunction<ffi.Void Function()>>('Test')
-    .asFunction();
+  final lib = getLibrary('Test.c');
+  final void Function() hello = lookup<ffi.Void>(lib, 'Test').asFunction();
   hello();
+
 }
