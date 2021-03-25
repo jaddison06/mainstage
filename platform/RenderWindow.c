@@ -1,7 +1,7 @@
 // LINKWITHLIB SDL2
 
 #include "SDL2/SDL.h"
-#include "PlatformErrorCodes.h"
+#include "build/shared_enums/c_enums.h"
 #include <stdio.h>
 #include <stdbool.h>
 
@@ -118,3 +118,4 @@ void FillRect(RenderWindow *win, int x, int y, int w, int h) {
     };
     SDL_RenderFillRect(win->ren, &rect);
 }
+

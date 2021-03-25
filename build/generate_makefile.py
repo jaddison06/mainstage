@@ -1,16 +1,9 @@
 import os
 import os.path as path
 import platform
+from util import *
 
-C_CODE_DIR = "platform"
 LIB_DIR = "build/libs"
-
-def get_all_c_files():
-    # assume we're in the root project dir
-    return list(filter(
-        lambda fname: path.splitext(fname)[1] == '.c',
-        os.listdir(C_CODE_DIR)
-    ))
 
 def get_platform_lib_extension():
     if platform.system() == 'Linux': return 'so'
@@ -49,7 +42,7 @@ def main():
     libnames = []
     
     # individual builds
-    for f in get_all_c_files():
+    for f in get_all_files_with_extension(C_CODE_DIR, "c"):
         libname = path.splitext(f)[0]
         with open(f"{C_CODE_DIR}/{f}", "rt") as fh:
             meta_libname, link_libs = parse_meta(fh.readlines())
@@ -62,15 +55,16 @@ def main():
         libnames.append(libname)
         
         #makefile += f"\n{libname}: {f}\n	gcc -shared -o {libname} -fPIC {f}"
-        command = f"gcc -shared -o {libname} -fPIC {C_CODE_DIR}/{f}"
+        command = f"gcc -shared -o {libname} -I . -fPIC {C_CODE_DIR}/{f}"
         for lib in link_libs:
             command += f" -l{lib}"
-        makefile += generate_makefile_item(libname, [f"{C_CODE_DIR}/{f}"], [command])
+        makefile += generate_makefile_item(libname, ["enums", f"{C_CODE_DIR}/{f}"], [command])
     
     # operations
     makefile += generate_makefile_item("run", ["all"], ["dart run"])
     makefile += generate_makefile_item("clean", [], [F"rm -rf {LIB_DIR}", F"mkdir {LIB_DIR}"])
     makefile += generate_makefile_item("makefile", [], ["python3 ./build/generate_makefile.py"])
+    makefile += generate_makefile_item("enums", [], ["python3 ./build/generate_enums.py"])
     
     # "all" as first target
     makefile = generate_makefile_item("all", libnames, []) + makefile

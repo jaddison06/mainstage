@@ -1,0 +1,4 @@
+Success
+SDL_InitVideo_Fail
+SDL_CreateWindow_Fail
+SDL_CreateRenderer_Fail
