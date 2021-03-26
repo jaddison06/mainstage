@@ -23,7 +23,7 @@ def generate_dart_enum(name):
 
 def generate_c_enum(name):
     lines = get_enum(name)
-    out = "enum " + name + "{\n"
+    out = "enum " + name + " {\n"
     for i, val in enumerate(lines):
         out += f"    {val} = {i},\n"
     out += "};\n\n"

@@ -27,7 +27,7 @@ RenderWindow *LogSDLError(RenderWindow *win, int exitCode) {
     return win;
 }
 
-void* InitRenderWindow(/*const char *title, */int width, int height, int backgroundRed, int backgroundGreen, int backgroundBlue) {
+RenderWindow* InitRenderWindow(/*const char *title, */int width, int height, int backgroundRed, int backgroundGreen, int backgroundBlue) {
     RenderWindow* out = (RenderWindow *) malloc(sizeof(RenderWindow));
     const char *title = "test";
     
@@ -119,10 +119,12 @@ void FillRect(RenderWindow *win, int x, int y, int w, int h) {
     SDL_RenderFillRect(win->ren, &rect);
 }
 
-void *GetEvent() {
-    SDL_Event *event = malloc(sizeof(SDL_Event));
+SDL_Event *CreateEvent() {
+    return malloc(sizeof(SDL_Event));
+}
+
+void PollEvent(SDL_Event *event) {
     SDL_PollEvent(event);
-    return event;
 }
 
 int GetEventType(SDL_Event *event) {
@@ -143,6 +145,6 @@ int GetEventType(SDL_Event *event) {
     }
 }
 
-void *DestroyEvent(SDL_Event *event) {
+void DestroyEvent(SDL_Event *event) {
     free(event);
 }
