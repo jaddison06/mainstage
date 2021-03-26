@@ -70,7 +70,6 @@ def get_dart_type(type):
     return out
 
 def generate_dart_ffi_utils(defs_file_lines):
-    # imports have to be at the top, conveniently this means consts can also go there
     out = f"const LIB_DIR = '{LIB_DIR}';\n\n"
     
     for line in defs_file_lines:

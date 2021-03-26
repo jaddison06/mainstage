@@ -52,10 +52,10 @@ void testRenderWindowClass() {
   win.destroy();
 }
 
-void main() {
+void main() {/*
   final lib = getLibrary('Test.c');
   final hello = lib.lookupFunction<Void Function(), void Function()>('Test');
-  hello();
+  hello();*/
 
   //testRenderWindow();
   testRenderWindowClass();
