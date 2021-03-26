@@ -18,5 +18,5 @@ makefile:
 	python3 ./build/generate_makefile.py
 
 enums:
-	python3 ./build/generate_enums.py
+	python3 ./build/enums.py
 

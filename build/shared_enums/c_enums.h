@@ -8,4 +8,19 @@ enum PlatformErrorCodes{
     SDL_CreateRenderer_Fail = 3,
 };
 
+enum SDLEventType{
+    Quit = 0,
+    LowMemory = 1,
+    KeyDown = 2,
+    KeyUp = 3,
+    MouseMove = 4,
+    MouseDown = 5,
+    MouseUp = 6,
+    MouseScroll = 7,
+    FingerDown = 8,
+    FingerUp = 9,
+    FingerDrag = 10,
+    NotImplemented = 11,
+};
+
 #endif

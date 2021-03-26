@@ -21,9 +21,6 @@ def generate_dart_enum(name):
 
     return out
 
-
-
-
 def generate_c_enum(name):
     lines = get_enum(name)
     out = "enum " + name + "{\n"
@@ -32,7 +29,7 @@ def generate_c_enum(name):
     out += "};\n\n"
     return out
 
-def main():
+def enums_codegen():
     dart_file = ""
     c_header = \
 """#ifndef ENUMS_H
@@ -48,4 +45,4 @@ def main():
     with open("build/shared_enums/dart_enums.dart", "wt") as fh: fh.write(dart_file)
 
 
-if __name__ == '__main__': main()
+if __name__ == '__main__': enums_codegen()
