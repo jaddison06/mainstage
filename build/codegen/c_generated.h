@@ -1,7 +1,7 @@
 #ifndef ENUMS_H
 #define ENUMS_H
 
-enum PlatformErrorCodes {
+enum PlatformErrorCode {
     Success = 0,
     SDL_InitVideo_Fail = 1,
     SDL_CreateWindow_Fail = 2,

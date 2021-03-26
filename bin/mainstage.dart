@@ -2,6 +2,8 @@ import 'dart:ffi';
 import 'package:ffi/ffi.dart';
 import 'libraryTools.dart';
 import '../build/shared_enums/dart_enums.dart';
+import 'renderWindow.dart';
+import 'colour.dart';
 
 void testRenderWindow() {
   final lib = getLibrary('RenderWindow.c');
@@ -40,11 +42,22 @@ void testRenderWindow() {
 
 }
 
+void testRenderWindowClass() {
+  final win = RenderWindow(
+    title: 'Mainstage',
+    width: 500,
+    height: 500,
+    backgroundColour: Colour(0, 0, 255));
+  win.start();
+  win.destroy();
+}
+
 void main() {
   final lib = getLibrary('Test.c');
   final hello = lookup<Void Function()>(lib, 'Test').asFunction<void Function()>();
   hello();
 
-  testRenderWindow();
+  //testRenderWindow();
+  testRenderWindowClass();
 
 }

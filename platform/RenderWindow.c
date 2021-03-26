@@ -3,7 +3,6 @@
 #include "SDL2/SDL.h"
 #include "build/shared_enums/c_enums.h"
 #include <stdio.h>
-#include <stdbool.h>
 
 typedef struct {
     SDL_Window *win;
@@ -72,8 +71,8 @@ void Flush(RenderWindow *win) {
     SDL_RenderClear(win->ren);
 }
 
-void SetFullscreen(RenderWindow *win, bool enable) {
-    if (enable) {
+void SetFullscreen(RenderWindow *win, int enable) {
+    if (enable == 1) {
         SDL_SetWindowFullscreen(win->win, SDL_WINDOW_FULLSCREEN);
     } else {
         SDL_SetWindowFullscreen(win->win, 0);
@@ -86,16 +85,6 @@ void DrawPoint(RenderWindow *win, int x, int y) {
 
 void DrawLine(RenderWindow *win, int x1, int y1, int x2, int y2) {
     SDL_RenderDrawLine(win->ren, x1, y1, x2, y2);
-}
-
-SDL_Rect GetSDLRect(int x1, int y1, int x2, int y2) {
-    SDL_Rect out = {
-        x: x1,
-        y: x2,
-        w: x2 - x1,
-        h: y2 - y1
-    };
-    return out;
 }
 
 void DrawRect(RenderWindow *win, int x, int y, int w, int h) {

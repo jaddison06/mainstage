@@ -1,16 +1,16 @@
-enum PlatformErrorCodes {
+enum PlatformErrorCode {
     Success,
     SDL_InitVideo_Fail,
     SDL_CreateWindow_Fail,
     SDL_CreateRenderer_Fail,
 }
 
-PlatformErrorCodes PlatformErrorCodesFromInt(int val) {
-    if (val == 0) { return PlatformErrorCodes.Success; }
-    if (val == 1) { return PlatformErrorCodes.SDL_InitVideo_Fail; }
-    if (val == 2) { return PlatformErrorCodes.SDL_CreateWindow_Fail; }
-    if (val == 3) { return PlatformErrorCodes.SDL_CreateRenderer_Fail; }
-    throw Exception('PlatformErrorCodes cannot be converted from int $val: Out of range.');
+PlatformErrorCode PlatformErrorCodeFromInt(int val) {
+    if (val == 0) { return PlatformErrorCode.Success; }
+    if (val == 1) { return PlatformErrorCode.SDL_InitVideo_Fail; }
+    if (val == 2) { return PlatformErrorCode.SDL_CreateWindow_Fail; }
+    if (val == 3) { return PlatformErrorCode.SDL_CreateRenderer_Fail; }
+    throw Exception('PlatformErrorCode cannot be converted from int $val: Out of range.');
 }
 
 enum SDLEventType {
