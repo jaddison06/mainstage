@@ -1,7 +1,7 @@
 // LINKWITHLIB SDL2
 
 #include "SDL2/SDL.h"
-#include "build/shared_enums/c_enums.h"
+#include "build/codegen/c_generated.h"
 #include <stdio.h>
 
 typedef struct {

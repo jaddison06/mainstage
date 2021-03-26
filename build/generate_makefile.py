@@ -3,8 +3,6 @@ import os.path as path
 import platform
 from util import *
 
-LIB_DIR = "build/libs"
-
 def get_platform_lib_extension():
     if platform.system() == 'Linux': return 'so'
     elif platform.system() == 'Darwin': return 'dylib'

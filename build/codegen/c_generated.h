@@ -1,5 +1,7 @@
-#ifndef ENUMS_H
-#define ENUMS_H
+#ifndef C_GENERATED_H
+#define C_GENERATED_H
+
+// ----- ENUMS -----
 
 enum PlatformErrorCode {
     Success = 0,
@@ -23,4 +25,4 @@ enum SDLEventType {
     NotImplemented = 11,
 };
 
-#endif
+#endif // C_GENERATED_H

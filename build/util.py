@@ -2,6 +2,7 @@ import os
 import os.path as path
 
 C_CODE_DIR = "platform"
+LIB_DIR = "build/libs"
 
 def get_all_files_with_extension(dirname, extension):
     # assume we're in the root project dir

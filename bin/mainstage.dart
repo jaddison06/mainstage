@@ -1,7 +1,7 @@
 import 'dart:ffi';
 import 'package:ffi/ffi.dart';
-import 'libraryTools.dart';
-import '../build/shared_enums/dart_enums.dart';
+import 'getLibrary.dart';
+import '../build/codegen/dart_generated.dart';
 import 'renderWindow.dart';
 import 'colour.dart';
 
@@ -54,7 +54,7 @@ void testRenderWindowClass() {
 
 void main() {
   final lib = getLibrary('Test.c');
-  final hello = lookup<Void Function()>(lib, 'Test').asFunction<void Function()>();
+  final hello = lib.lookupFunction<Void Function(), void Function()>('Test');
   hello();
 
   //testRenderWindow();
