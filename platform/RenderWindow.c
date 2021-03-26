@@ -27,9 +27,8 @@ RenderWindow *LogSDLError(RenderWindow *win, int exitCode) {
     return win;
 }
 
-RenderWindow* InitRenderWindow(/*const char *title, */int width, int height, int backgroundRed, int backgroundGreen, int backgroundBlue) {
+RenderWindow* InitRenderWindow(const char *title, int width, int height, int backgroundRed, int backgroundGreen, int backgroundBlue) {
     RenderWindow* out = (RenderWindow *) malloc(sizeof(RenderWindow));
-    const char *title = "test";
     
     if (SDL_Init(SDL_INIT_VIDEO) != 0) {
         return LogSDLError(out, SDL_InitVideo_Fail);
