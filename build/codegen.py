@@ -8,15 +8,17 @@ def generate_dart_enum(name):
     lines = get_file(name, 'enum')
     out = "enum " + name + " {\n"
     for val in lines:
-        out += f"    {val},\n"
+        if not val.isspace():
+            out += f"    {val},\n"
     out += "}\n\n"
     out += f"{name} {name}FromInt(int val) "
     out += "{\n"
     for i, val in enumerate(lines):
-        out += f"    if (val == {i}) "
-        out += "{"
-        out += f" return {name}.{val}; "
-        out += "}\n"
+        if not val.isspace():
+            out += f"    if (val == {i}) "
+            out += "{"
+            out += f" return {name}.{val}; "
+            out += "}\n"
     out += f"    throw Exception('{name} cannot be converted from int $val: Out of range.');\n"
     out += "}\n\n"
 
@@ -26,7 +28,8 @@ def generate_c_enum(name):
     lines = get_file(name, 'enum')
     out = "enum " + name + " {\n"
     for i, val in enumerate(lines):
-        out += f"    {val} = {i},\n"
+        if not val.isspace():
+            out += f"    {val} = {i},\n"
     out += "};\n\n"
     return out
 
@@ -39,6 +42,8 @@ def enums():
         c += generate_c_enum(name_without_extension)
     
     return dart, c
+
+# todo (jaddison): refactor ffigen to a slightly nicer layout
 
 def get_native_type(type):
     out = ""

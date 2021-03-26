@@ -47,7 +47,7 @@ def main():
         
         if meta_libname != "": libname = meta_libname
 
-        # TODO: link against libs, refactor parse_meta to be slightly nicer & better-commented
+        # todo(jaddison): refactor parse_meta to be slightly nicer & better-commented
         
         libname = f"{LIB_DIR}/lib{libname}.{get_platform_lib_extension()}"
         libnames.append(libname)

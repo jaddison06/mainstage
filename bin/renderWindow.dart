@@ -32,6 +32,9 @@ class RenderWindow {
     required Colour backgroundColour
   }) {
     _lib = getLibrary('RenderWindow.c');
+
+    // can we do this before the constructor? codegen?
+    // todo (jaddison): automatically recognise when a function with 1st arg void* is meant as a method & generate classes
     
     _init = lookupInitRenderWindow(_lib);
     _destroy = lookupDestroyRenderWindow(_lib);
@@ -53,7 +56,6 @@ class RenderWindow {
 
   }
   
-
   void start() {
     // todo (jaddison): If we're really unlucky then event could get alloc'd with a quit value. We shouldn't check until we've polled.
     var event = _createEvent();
