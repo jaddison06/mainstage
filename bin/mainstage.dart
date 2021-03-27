@@ -2,6 +2,7 @@ import 'dart:ffi';
 import 'package:ffi/ffi.dart';
 import 'getLibrary.dart';
 import 'dart_codegen.dart';
+import 'renderWindow.dart';
 import 'colour.dart';
 
 void testRenderWindow() {
@@ -42,22 +43,16 @@ void testRenderWindow() {
 }
 
 void testRenderWindowGeneratedClass() {
-  final libRW = getLibrary('RenderWindow.c');
   final libEvent = getLibrary('Event.c');
-
-  final initRenderWindow = lookupInitRenderWindow(libRW);
   final initEvent = lookupCreateEvent(libEvent);
 
-  final win = cRenderWindow();
-  win.structPointer = initRenderWindow(
-    'Mainstage'.toNativeUtf8(),
-    500,
-    500,
-    0,
-    0,
-    255
+  final win = initRenderWindow(
+    title: 'Mainstage',
+    width: 500,
+    height: 500,
+    backgroundCol: Colour(0, 0, 255)
   );
-
+  
   final event = cEvent();
   event.structPointer = initEvent();
 
