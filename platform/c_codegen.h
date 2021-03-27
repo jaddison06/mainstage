@@ -1,5 +1,5 @@
-#ifndef C_GENERATED_H
-#define C_GENERATED_H
+#ifndef C_CODEGEN_H
+#define C_CODEGEN_H
 
 // ----- ENUMS -----
 
@@ -25,4 +25,4 @@ enum SDLEventType {
     NotImplemented = 11,
 };
 
-#endif // C_GENERATED_H
+#endif // C_CODEGEN_H

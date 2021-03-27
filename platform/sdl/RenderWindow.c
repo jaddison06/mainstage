@@ -1,7 +1,7 @@
 // LINKWITHLIB SDL2
 
 #include "SDL2/SDL.h"
-#include "build/codegen/c_generated.h"
+#include "c_codegen.h"
 #include <stdio.h>
 
 typedef struct {

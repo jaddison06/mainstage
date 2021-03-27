@@ -1,6 +1,6 @@
 import 'dart:ffi';
 import 'package:ffi/ffi.dart';
-import '../../bin/getLibrary.dart';
+import 'getLibrary.dart';
 
 const LIB_DIR = 'build/libs';
 

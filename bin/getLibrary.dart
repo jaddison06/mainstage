@@ -1,6 +1,6 @@
 import 'dart:io';
 import 'dart:ffi' as ffi;
-import '../build/codegen/dart_generated.dart';
+import 'dart_codegen.dart';
 
 // expects the name of the C file corresponding to the lib.
 ffi.DynamicLibrary getLibrary(String name) {

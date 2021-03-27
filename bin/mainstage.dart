@@ -1,7 +1,7 @@
 import 'dart:ffi';
 import 'package:ffi/ffi.dart';
 import 'getLibrary.dart';
-import '../build/codegen/dart_generated.dart';
+import 'dart_codegen.dart';
 import 'colour.dart';
 
 void testRenderWindow() {

@@ -42,7 +42,6 @@ def main():
     # individual builds
     for f in get_all_files_with_extension(C_CODE_DIR, "c"):
         libname = path.splitext(path.basename(f))[0]
-        print(libname)
         with open(f, "rt") as fh:
             meta_libname, link_libs = parse_meta(fh.readlines())
         
@@ -54,7 +53,7 @@ def main():
         libnames.append(libname)
         
         #makefile += f"\n{libname}: {f}\n	gcc -shared -o {libname} -fPIC {f}"
-        command = f"gcc -shared -o {libname} -I . -fPIC {f}"
+        command = f"gcc -shared -o {libname} -I ./platform -fPIC {f}"
         for lib in link_libs:
             command += f" -l{lib}"
         makefile += generate_makefile_item(libname, ["codegen", f], [command])

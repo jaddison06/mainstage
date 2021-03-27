@@ -1,6 +1,6 @@
 // LINKWITHLIB SDL2
 
-#include "build/codegen/c_generated.h"
+#include "c_codegen.h"
 #include "SDL2/SDL.h"
 
 SDL_Event *CreateEvent() {

@@ -236,8 +236,6 @@ def generate_dart_class(cclass_file_path):
         out += "    }\n"
     
     out += "\n}\n\n"
-
-
     
     return out
 
@@ -247,8 +245,8 @@ def generate_decl(name):
     return f"// ----- {name.upper()} -----\n\n"
 
 def main():
-    dart_file = f"import 'dart:ffi';\nimport 'package:ffi/ffi.dart';\nimport '../../bin/getLibrary.dart';\n\nconst LIB_DIR = '{LIB_DIR}';\n\n"
-    c_header = "#ifndef C_GENERATED_H\n#define C_GENERATED_H\n\n"
+    dart_file = f"import 'dart:ffi';\nimport 'package:ffi/ffi.dart';\nimport 'getLibrary.dart';\n\nconst LIB_DIR = '{LIB_DIR}';\n\n"
+    c_header = "#ifndef C_CODEGEN_H\n#define C_CODEGEN_H\n\n"
 
     enums_decl =  generate_decl("enums")
     dart_file += enums_decl
@@ -258,7 +256,7 @@ def main():
     dart_file += dart_enums
     c_header += c_enums
     
-    c_header += "#endif // C_GENERATED_H"
+    c_header += "#endif // C_CODEGEN_H"
 
     dart_file += generate_decl("ffi: generated functions")
     for f in get_all_files_with_extension(C_CODE_DIR, "defs"):
@@ -270,8 +268,8 @@ def main():
         dart_file += generate_dart_class(f)
     
 
-    with open("build/codegen/c_generated.h", "wt") as fh: fh.write(c_header)
-    with open("build/codegen/dart_generated.dart", "wt") as fh: fh.write(dart_file)
+    with open("platform/c_codegen.h", "wt") as fh: fh.write(c_header)
+    with open("bin/dart_codegen.dart", "wt") as fh: fh.write(dart_file)
 
 
 if __name__ == '__main__': main()
