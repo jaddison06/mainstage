@@ -2,10 +2,11 @@ from util import *
 import os.path as path
 
 def get_file(name, ext):
-    return get_lines(f"{C_CODE_DIR}/{name}.{ext}")
+    return get_lines(f"{name}.{ext}")
 
 def generate_dart_enum(name):
     lines = get_file(name, 'enum')
+    name = path.basename(name)
     out = "enum " + name + " {\n"
     for val in lines:
         if not val.isspace():
@@ -26,6 +27,7 @@ def generate_dart_enum(name):
 
 def generate_c_enum(name):
     lines = get_file(name, 'enum')
+    name = path.basename(name)
     out = "enum " + name + " {\n"
     for i, val in enumerate(lines):
         if not val.isspace():
@@ -107,11 +109,6 @@ def generate_dart_ffi_utils(defs_file_lines):
             out += "}\n\n"
     
     return out
-            
-
-
-
-            
 
 
 def generate_decl(name):

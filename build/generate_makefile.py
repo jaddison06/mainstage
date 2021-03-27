@@ -41,8 +41,9 @@ def main():
     
     # individual builds
     for f in get_all_files_with_extension(C_CODE_DIR, "c"):
-        libname = path.splitext(f)[0]
-        with open(f"{C_CODE_DIR}/{f}", "rt") as fh:
+        libname = path.splitext(path.basename(f))[0]
+        print(libname)
+        with open(f, "rt") as fh:
             meta_libname, link_libs = parse_meta(fh.readlines())
         
         if meta_libname != "": libname = meta_libname
@@ -53,10 +54,10 @@ def main():
         libnames.append(libname)
         
         #makefile += f"\n{libname}: {f}\n	gcc -shared -o {libname} -fPIC {f}"
-        command = f"gcc -shared -o {libname} -I . -fPIC {C_CODE_DIR}/{f}"
+        command = f"gcc -shared -o {libname} -I . -fPIC {f}"
         for lib in link_libs:
             command += f" -l{lib}"
-        makefile += generate_makefile_item(libname, ["codegen", f"{C_CODE_DIR}/{f}"], [command])
+        makefile += generate_makefile_item(libname, ["codegen", f], [command])
     
     # todo (jaddison): Make codegen a logical dependency (based on files, dynamic though) so we don't rebuild all the libs every time
     # could do this by generating the makefile each time round? wouldn't load though... Possibly "make all" builds makefile and then

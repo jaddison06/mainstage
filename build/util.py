@@ -5,10 +5,18 @@ C_CODE_DIR = "platform"
 LIB_DIR = "build/libs"
 
 def get_all_files_with_extension(dirname, extension):
-    # assume we're in the root project dir
+    
+    # get full relative path
+    entries = list(map(lambda entry: f"{dirname}/{entry}", os.listdir(dirname)))
+    for i in range(len(entries)):
+        if path.isdir(entries[i]):
+            for entry in get_all_files_with_extension(entries[i], extension):
+                entries.append(entry)
+    
+            
     return list(filter(
         lambda fname: path.splitext(fname)[1] == f'.{extension}',
-        os.listdir(dirname)
+        entries
     ))
 
 def get_lines(fname):
