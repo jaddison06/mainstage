@@ -1,5 +1,8 @@
 import 'dart:ffi';
 import 'package:ffi/ffi.dart';
+import '../../bin/getLibrary.dart';
+
+const LIB_DIR = 'build/libs';
 
 // ----- ENUMS -----
 
@@ -51,106 +54,6 @@ SDLEventType SDLEventTypeFromInt(int val) {
 
 // ----- FFI UTILS -----
 
-const LIB_DIR = 'build/libs';
-
-
-typedef LogSDLErrorNativeSig = Pointer<Void> Function(Pointer<Void>, Int32);
-
-typedef LogSDLErrorSig = Pointer<Void> Function(Pointer<Void>, int);
-
-LogSDLErrorSig lookupLogSDLError(DynamicLibrary lib) {
-    return lib.lookupFunction<LogSDLErrorNativeSig, LogSDLErrorSig>('LogSDLError');
-}
-
-
-typedef InitRenderWindowNativeSig = Pointer<Void> Function(Pointer<Utf8>, Int32, Int32, Int32, Int32, Int32);
-
-typedef InitRenderWindowSig = Pointer<Void> Function(Pointer<Utf8>, int, int, int, int, int);
-
-InitRenderWindowSig lookupInitRenderWindow(DynamicLibrary lib) {
-    return lib.lookupFunction<InitRenderWindowNativeSig, InitRenderWindowSig>('InitRenderWindow');
-}
-
-
-typedef DestroyRenderWindowNativeSig = Void Function(Pointer<Void>);
-
-typedef DestroyRenderWindowSig = void Function(Pointer<Void>);
-
-DestroyRenderWindowSig lookupDestroyRenderWindow(DynamicLibrary lib) {
-    return lib.lookupFunction<DestroyRenderWindowNativeSig, DestroyRenderWindowSig>('DestroyRenderWindow');
-}
-
-
-typedef GetErrorCodeNativeSig = Int32 Function(Pointer<Void>);
-
-typedef GetErrorCodeSig = int Function(Pointer<Void>);
-
-GetErrorCodeSig lookupGetErrorCode(DynamicLibrary lib) {
-    return lib.lookupFunction<GetErrorCodeNativeSig, GetErrorCodeSig>('GetErrorCode');
-}
-
-
-typedef SetColourNativeSig = Void Function(Pointer<Void>, Int32, Int32, Int32);
-
-typedef SetColourSig = void Function(Pointer<Void>, int, int, int);
-
-SetColourSig lookupSetColour(DynamicLibrary lib) {
-    return lib.lookupFunction<SetColourNativeSig, SetColourSig>('SetColour');
-}
-
-
-typedef FlushNativeSig = Void Function(Pointer<Void>);
-
-typedef FlushSig = void Function(Pointer<Void>);
-
-FlushSig lookupFlush(DynamicLibrary lib) {
-    return lib.lookupFunction<FlushNativeSig, FlushSig>('Flush');
-}
-
-
-typedef SetFullscreenNativeSig = Void Function(Pointer<Void>, Int32);
-
-typedef SetFullscreenSig = void Function(Pointer<Void>, int);
-
-SetFullscreenSig lookupSetFullscreen(DynamicLibrary lib) {
-    return lib.lookupFunction<SetFullscreenNativeSig, SetFullscreenSig>('SetFullscreen');
-}
-
-
-typedef DrawPointNativeSig = Void Function(Pointer<Void>, Int32, Int32);
-
-typedef DrawPointSig = void Function(Pointer<Void>, int, int);
-
-DrawPointSig lookupDrawPoint(DynamicLibrary lib) {
-    return lib.lookupFunction<DrawPointNativeSig, DrawPointSig>('DrawPoint');
-}
-
-
-typedef DrawLineNativeSig = Void Function(Pointer<Void>, Int32, Int32, Int32, Int32);
-
-typedef DrawLineSig = void Function(Pointer<Void>, int, int, int, int);
-
-DrawLineSig lookupDrawLine(DynamicLibrary lib) {
-    return lib.lookupFunction<DrawLineNativeSig, DrawLineSig>('DrawLine');
-}
-
-
-typedef DrawRectNativeSig = Void Function(Pointer<Void>, Int32, Int32, Int32, Int32);
-
-typedef DrawRectSig = void Function(Pointer<Void>, int, int, int, int);
-
-DrawRectSig lookupDrawRect(DynamicLibrary lib) {
-    return lib.lookupFunction<DrawRectNativeSig, DrawRectSig>('DrawRect');
-}
-
-
-typedef FillRectNativeSig = Void Function(Pointer<Void>, Int32, Int32, Int32, Int32);
-
-typedef FillRectSig = void Function(Pointer<Void>, int, int, int, int);
-
-FillRectSig lookupFillRect(DynamicLibrary lib) {
-    return lib.lookupFunction<FillRectNativeSig, FillRectSig>('FillRect');
-}
 
 
 typedef CreateEventNativeSig = Pointer<Void> Function();
@@ -162,29 +65,203 @@ CreateEventSig lookupCreateEvent(DynamicLibrary lib) {
 }
 
 
-typedef PollEventNativeSig = Void Function(Pointer<Void>);
 
-typedef PollEventSig = void Function(Pointer<Void>);
+typedef InitRenderWindowNativeSig = Pointer<Void> Function(Pointer<Utf8>, Int32, Int32, Int32, Int32, Int32);
 
-PollEventSig lookupPollEvent(DynamicLibrary lib) {
-    return lib.lookupFunction<PollEventNativeSig, PollEventSig>('PollEvent');
+typedef InitRenderWindowSig = Pointer<Void> Function(Pointer<Utf8>, int, int, int, int, int);
+
+InitRenderWindowSig lookupInitRenderWindow(DynamicLibrary lib) {
+    return lib.lookupFunction<InitRenderWindowNativeSig, InitRenderWindowSig>('InitRenderWindow');
 }
 
+// ----- GENERATED CLASSES -----
 
-typedef GetEventTypeNativeSig = Int32 Function(Pointer<Void>);
 
-typedef GetEventTypeSig = int Function(Pointer<Void>);
 
-GetEventTypeSig lookupGetEventType(DynamicLibrary lib) {
-    return lib.lookupFunction<GetEventTypeNativeSig, GetEventTypeSig>('GetEventType');
+typedef _generatedClasscEventPollNativeSig = Void Function(Pointer<Void>);
+
+typedef _generatedClasscEventPollSig = void Function(Pointer<Void>);
+
+
+typedef _generatedClasscEventGetTypeNativeSig = Int32 Function(Pointer<Void>);
+
+typedef _generatedClasscEventGetTypeSig = int Function(Pointer<Void>);
+
+
+typedef _generatedClasscEventDestroyNativeSig = Void Function(Pointer<Void>);
+
+typedef _generatedClasscEventDestroySig = void Function(Pointer<Void>);
+
+
+class cEvent {
+    Pointer<Void> structPointer = Pointer.fromAddress(0);
+
+    void validatePointer(String methodName) {
+        if (structPointer.address == 0) {
+            throw Exception('cEvent.$methodName was called, but structPointer is a nullptr.');
+        }
+    }
+
+    late _generatedClasscEventPollSig _Poll;
+    late _generatedClasscEventGetTypeSig _GetType;
+    late _generatedClasscEventDestroySig _Destroy;
+
+    cEvent() {
+        final lib = getLibrary('Event.c');
+
+        _Poll = lib.lookupFunction<_generatedClasscEventPollNativeSig, _generatedClasscEventPollSig>('Poll');
+        _GetType = lib.lookupFunction<_generatedClasscEventGetTypeNativeSig, _generatedClasscEventGetTypeSig>('GetType');
+        _Destroy = lib.lookupFunction<_generatedClasscEventDestroyNativeSig, _generatedClasscEventDestroySig>('Destroy');
+    }
+     void Poll() {
+        validatePointer('Poll');
+        return _Poll(structPointer, );
+    }
+
+     int GetType() {
+        validatePointer('GetType');
+        return _GetType(structPointer, );
+    }
+
+     void Destroy() {
+        validatePointer('Destroy');
+        return _Destroy(structPointer, );
+    }
+
 }
 
+typedef _generatedClasscRenderWindowLogSDLErrorNativeSig = Void Function(Pointer<Void>, Int32);
 
-typedef DestroyEventNativeSig = Void Function(Pointer<Void>);
+typedef _generatedClasscRenderWindowLogSDLErrorSig = void Function(Pointer<Void>, int);
 
-typedef DestroyEventSig = void Function(Pointer<Void>);
 
-DestroyEventSig lookupDestroyEvent(DynamicLibrary lib) {
-    return lib.lookupFunction<DestroyEventNativeSig, DestroyEventSig>('DestroyEvent');
+typedef _generatedClasscRenderWindowDestroyNativeSig = Void Function(Pointer<Void>);
+
+typedef _generatedClasscRenderWindowDestroySig = void Function(Pointer<Void>);
+
+
+typedef _generatedClasscRenderWindowGetErrorCodeNativeSig = Int32 Function(Pointer<Void>);
+
+typedef _generatedClasscRenderWindowGetErrorCodeSig = int Function(Pointer<Void>);
+
+
+typedef _generatedClasscRenderWindowSetColourNativeSig = Void Function(Pointer<Void>, Int32, Int32, Int32);
+
+typedef _generatedClasscRenderWindowSetColourSig = void Function(Pointer<Void>, int, int, int);
+
+
+typedef _generatedClasscRenderWindowFlushNativeSig = Void Function(Pointer<Void>);
+
+typedef _generatedClasscRenderWindowFlushSig = void Function(Pointer<Void>);
+
+
+typedef _generatedClasscRenderWindowSetFullscreenNativeSig = Void Function(Pointer<Void>, Int32);
+
+typedef _generatedClasscRenderWindowSetFullscreenSig = void Function(Pointer<Void>, int);
+
+
+typedef _generatedClasscRenderWindowDrawPointNativeSig = Void Function(Pointer<Void>, Int32, Int32);
+
+typedef _generatedClasscRenderWindowDrawPointSig = void Function(Pointer<Void>, int, int);
+
+
+typedef _generatedClasscRenderWindowDrawLineNativeSig = Void Function(Pointer<Void>, Int32, Int32, Int32, Int32);
+
+typedef _generatedClasscRenderWindowDrawLineSig = void Function(Pointer<Void>, int, int, int, int);
+
+
+typedef _generatedClasscRenderWindowDrawRectNativeSig = Void Function(Pointer<Void>, Int32, Int32, Int32, Int32);
+
+typedef _generatedClasscRenderWindowDrawRectSig = void Function(Pointer<Void>, int, int, int, int);
+
+
+typedef _generatedClasscRenderWindowFillRectNativeSig = Void Function(Pointer<Void>, Int32, Int32, Int32, Int32);
+
+typedef _generatedClasscRenderWindowFillRectSig = void Function(Pointer<Void>, int, int, int, int);
+
+
+class cRenderWindow {
+    Pointer<Void> structPointer = Pointer.fromAddress(0);
+
+    void validatePointer(String methodName) {
+        if (structPointer.address == 0) {
+            throw Exception('cRenderWindow.$methodName was called, but structPointer is a nullptr.');
+        }
+    }
+
+    late _generatedClasscRenderWindowLogSDLErrorSig _LogSDLError;
+    late _generatedClasscRenderWindowDestroySig _Destroy;
+    late _generatedClasscRenderWindowGetErrorCodeSig _GetErrorCode;
+    late _generatedClasscRenderWindowSetColourSig _SetColour;
+    late _generatedClasscRenderWindowFlushSig _Flush;
+    late _generatedClasscRenderWindowSetFullscreenSig _SetFullscreen;
+    late _generatedClasscRenderWindowDrawPointSig _DrawPoint;
+    late _generatedClasscRenderWindowDrawLineSig _DrawLine;
+    late _generatedClasscRenderWindowDrawRectSig _DrawRect;
+    late _generatedClasscRenderWindowFillRectSig _FillRect;
+
+    cRenderWindow() {
+        final lib = getLibrary('RenderWindow.c');
+
+        _LogSDLError = lib.lookupFunction<_generatedClasscRenderWindowLogSDLErrorNativeSig, _generatedClasscRenderWindowLogSDLErrorSig>('LogSDLError');
+        _Destroy = lib.lookupFunction<_generatedClasscRenderWindowDestroyNativeSig, _generatedClasscRenderWindowDestroySig>('Destroy');
+        _GetErrorCode = lib.lookupFunction<_generatedClasscRenderWindowGetErrorCodeNativeSig, _generatedClasscRenderWindowGetErrorCodeSig>('GetErrorCode');
+        _SetColour = lib.lookupFunction<_generatedClasscRenderWindowSetColourNativeSig, _generatedClasscRenderWindowSetColourSig>('SetColour');
+        _Flush = lib.lookupFunction<_generatedClasscRenderWindowFlushNativeSig, _generatedClasscRenderWindowFlushSig>('Flush');
+        _SetFullscreen = lib.lookupFunction<_generatedClasscRenderWindowSetFullscreenNativeSig, _generatedClasscRenderWindowSetFullscreenSig>('SetFullscreen');
+        _DrawPoint = lib.lookupFunction<_generatedClasscRenderWindowDrawPointNativeSig, _generatedClasscRenderWindowDrawPointSig>('DrawPoint');
+        _DrawLine = lib.lookupFunction<_generatedClasscRenderWindowDrawLineNativeSig, _generatedClasscRenderWindowDrawLineSig>('DrawLine');
+        _DrawRect = lib.lookupFunction<_generatedClasscRenderWindowDrawRectNativeSig, _generatedClasscRenderWindowDrawRectSig>('DrawRect');
+        _FillRect = lib.lookupFunction<_generatedClasscRenderWindowFillRectNativeSig, _generatedClasscRenderWindowFillRectSig>('FillRect');
+    }
+     void LogSDLError(int exitCode, ) {
+        validatePointer('LogSDLError');
+        return _LogSDLError(structPointer, exitCode, );
+    }
+
+     void Destroy() {
+        validatePointer('Destroy');
+        return _Destroy(structPointer, );
+    }
+
+     int GetErrorCode() {
+        validatePointer('GetErrorCode');
+        return _GetErrorCode(structPointer, );
+    }
+
+     void SetColour(int r, int g, int b, ) {
+        validatePointer('SetColour');
+        return _SetColour(structPointer, r, g, b, );
+    }
+
+     void Flush() {
+        validatePointer('Flush');
+        return _Flush(structPointer, );
+    }
+
+     void SetFullscreen(int enable, ) {
+        validatePointer('SetFullscreen');
+        return _SetFullscreen(structPointer, enable, );
+    }
+
+     void DrawPoint(int x, int y, ) {
+        validatePointer('DrawPoint');
+        return _DrawPoint(structPointer, x, y, );
+    }
+
+     void DrawLine(int x1, int y1, int x2, int y2, ) {
+        validatePointer('DrawLine');
+        return _DrawLine(structPointer, x1, y1, x2, y2, );
+    }
+
+     void DrawRect(int x1, int y1, int x2, int y2, ) {
+        validatePointer('DrawRect');
+        return _DrawRect(structPointer, x1, y1, x2, y2, );
+    }
+
+     void FillRect(int x1, int y1, int x2, int y2, ) {
+        validatePointer('FillRect');
+        return _FillRect(structPointer, x1, y1, x2, y2, );
+    }
+
 }
-

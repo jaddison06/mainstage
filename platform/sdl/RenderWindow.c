@@ -50,7 +50,7 @@ RenderWindow* InitRenderWindow(const char *title, int width, int height, int bac
     return out;
 }
 
-void DestroyRenderWindow(RenderWindow *win) {
+void Destroy(RenderWindow *win) {
     SDL_DestroyRenderer(win->ren);
     SDL_DestroyWindow(win->win);
     SDL_Quit();
@@ -105,34 +105,4 @@ void FillRect(RenderWindow *win, int x, int y, int w, int h) {
         h: h
     };
     SDL_RenderFillRect(win->ren, &rect);
-}
-
-SDL_Event *CreateEvent() {
-    return malloc(sizeof(SDL_Event));
-}
-
-void PollEvent(SDL_Event *event) {
-    SDL_PollEvent(event);
-}
-
-int GetEventType(SDL_Event *event) {
-    switch (event->type) {
-        case SDL_QUIT: return Quit;
-        case SDL_APP_LOWMEMORY: return LowMemory;
-        case SDL_KEYDOWN: return KeyDown;
-        case SDL_KEYUP: return KeyUp;
-        case SDL_MOUSEMOTION: return MouseMove;
-        case SDL_MOUSEBUTTONDOWN: return MouseDown;
-        case SDL_MOUSEBUTTONUP: return MouseUp;
-        case SDL_MOUSEWHEEL: return MouseScroll;
-        case SDL_FINGERDOWN: return FingerDown;
-        case SDL_FINGERUP: return FingerUp;
-        case SDL_FINGERMOTION: return FingerDrag;
-
-        default: return NotImplemented;
-    }
-}
-
-void DestroyEvent(SDL_Event *event) {
-    free(event);
 }
