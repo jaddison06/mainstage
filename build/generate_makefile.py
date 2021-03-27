@@ -56,7 +56,7 @@ def main():
         command = f"gcc -shared -o {libname} -I ./platform -fPIC {f}"
         for lib in link_libs:
             command += f" -l{lib}"
-        makefile += generate_makefile_item(libname, ["codegen", f], [command])
+        makefile += generate_makefile_item(libname, [f], [command])
     
     # todo (jaddison): Make codegen a logical dependency (based on files, dynamic though) so we don't rebuild all the libs every time
     # could do this by generating the makefile each time round? wouldn't load though... Possibly "make all" builds makefile and then
@@ -65,7 +65,7 @@ def main():
     # Probably over-complicating that though, we'll see
 
     # operations
-    makefile += generate_makefile_item("run", ["all"], ["dart run"])
+    makefile += generate_makefile_item("run", ["all", "codegen"], ["dart run"])
     makefile += generate_makefile_item("clean", [], [F"rm -rf {LIB_DIR}", F"mkdir {LIB_DIR}"])
     makefile += generate_makefile_item("makefile", [], ["python3 ./build/generate_makefile.py"])
     makefile += generate_makefile_item("codegen", [], ["python3 ./build/codegen.py"])

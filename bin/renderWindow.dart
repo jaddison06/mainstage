@@ -5,12 +5,12 @@ import 'getLibrary.dart';
 
 // todo (jaddison): we should be able to codegen this tbh
 
-cRenderWindow initRenderWindow({
-    required String title,
-    required int width,
-    required int height,
-    required Colour backgroundCol
-}) {
+cRenderWindow initRenderWindow(
+    String title,
+    int width,
+    int height,
+    Colour backgroundCol
+) {
   final libRW = getLibrary('RenderWindow.c');
   final init = lookupInitRenderWindow(libRW);
 

@@ -10,6 +10,8 @@ typedef struct {
     int errorCode;
 
     int backgroundRed, backgroundGreen, backgroundBlue;
+    
+    int frameCount;
 } RenderWindow;
 
 RenderWindow *LogSDLError(RenderWindow *win, int exitCode) {
@@ -46,6 +48,7 @@ RenderWindow* InitRenderWindow(const char *title, int width, int height, int bac
     out->backgroundBlue = backgroundBlue;
 
     out->errorCode = Success;
+    out->frameCount = 0;
 
     return out;
 }
@@ -69,6 +72,12 @@ void Flush(RenderWindow *win) {
     SDL_RenderPresent(win->ren);
     SetColour(win, win->backgroundRed, win->backgroundGreen, win->backgroundBlue);
     SDL_RenderClear(win->ren);
+
+    win->frameCount++;
+}
+
+int GetFrameCount(RenderWindow *win) {
+    return win->frameCount;
 }
 
 void SetFullscreen(RenderWindow *win, int enable) {

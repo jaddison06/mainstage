@@ -154,6 +154,11 @@ typedef _generatedClasscRenderWindowFlushNativeSig = Void Function(Pointer<Void>
 typedef _generatedClasscRenderWindowFlushSig = void Function(Pointer<Void>);
 
 
+typedef _generatedClasscRenderWindowGetFrameCountNativeSig = Int32 Function(Pointer<Void>);
+
+typedef _generatedClasscRenderWindowGetFrameCountSig = int Function(Pointer<Void>);
+
+
 typedef _generatedClasscRenderWindowSetFullscreenNativeSig = Void Function(Pointer<Void>, Int32);
 
 typedef _generatedClasscRenderWindowSetFullscreenSig = void Function(Pointer<Void>, int);
@@ -194,6 +199,7 @@ class cRenderWindow {
     late _generatedClasscRenderWindowGetErrorCodeSig _GetErrorCode;
     late _generatedClasscRenderWindowSetColourSig _SetColour;
     late _generatedClasscRenderWindowFlushSig _Flush;
+    late _generatedClasscRenderWindowGetFrameCountSig _GetFrameCount;
     late _generatedClasscRenderWindowSetFullscreenSig _SetFullscreen;
     late _generatedClasscRenderWindowDrawPointSig _DrawPoint;
     late _generatedClasscRenderWindowDrawLineSig _DrawLine;
@@ -208,6 +214,7 @@ class cRenderWindow {
         _GetErrorCode = lib.lookupFunction<_generatedClasscRenderWindowGetErrorCodeNativeSig, _generatedClasscRenderWindowGetErrorCodeSig>('GetErrorCode');
         _SetColour = lib.lookupFunction<_generatedClasscRenderWindowSetColourNativeSig, _generatedClasscRenderWindowSetColourSig>('SetColour');
         _Flush = lib.lookupFunction<_generatedClasscRenderWindowFlushNativeSig, _generatedClasscRenderWindowFlushSig>('Flush');
+        _GetFrameCount = lib.lookupFunction<_generatedClasscRenderWindowGetFrameCountNativeSig, _generatedClasscRenderWindowGetFrameCountSig>('GetFrameCount');
         _SetFullscreen = lib.lookupFunction<_generatedClasscRenderWindowSetFullscreenNativeSig, _generatedClasscRenderWindowSetFullscreenSig>('SetFullscreen');
         _DrawPoint = lib.lookupFunction<_generatedClasscRenderWindowDrawPointNativeSig, _generatedClasscRenderWindowDrawPointSig>('DrawPoint');
         _DrawLine = lib.lookupFunction<_generatedClasscRenderWindowDrawLineNativeSig, _generatedClasscRenderWindowDrawLineSig>('DrawLine');
@@ -237,6 +244,11 @@ class cRenderWindow {
      void Flush() {
         validatePointer('Flush');
         return _Flush(structPointer, );
+    }
+
+     int GetFrameCount() {
+        validatePointer('GetFrameCount');
+        return _GetFrameCount(structPointer, );
     }
 
      void SetFullscreen(int enable) {
