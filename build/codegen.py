@@ -79,7 +79,7 @@ def get_dart_type(type):
     return out
 
 def generate_dart_funcsig_typedefs(name, return_type, params, prefix=""):
-    out = "\n"
+    out = ""
     out += f"\ntypedef {prefix}{name}NativeSig = {get_native_type(return_type)} Function("
     # if there aren't any params, we get [''] for some reason
     if params != ['']:
@@ -184,6 +184,7 @@ def generate_dart_class(cclass_file_path):
     for method_name, data in methods.items():
         param_types = ['void*'] + [param_type for param_type in data["params"].values()]
         out += generate_dart_funcsig_typedefs(method_name, data["return_type"], param_types, f"_generatedClass{class_name}")
+        out += "\n"
     
     # class boilerplate
 
@@ -221,7 +222,7 @@ def generate_dart_class(cclass_file_path):
             out += " "
             out += param_name
 
-            if i != len(data["params"].keys()): out += ", "
+            if i != len(data["params"].keys())-1: out += ", "
         
         out += ") {\n"
         out += f"        validatePointer('{method_name}');\n"
@@ -230,11 +231,11 @@ def generate_dart_class(cclass_file_path):
             param_name = list(data["params"].keys())[i]
             out += param_name
 
-            if i != len(data["params"].keys()): out += ", "
+            if i != len(data["params"].keys())-1: out += ", "
         out += ");\n"
         out += "    }\n"
     
-    out += "\n}"
+    out += "\n}\n\n"
 
 
     
@@ -259,12 +260,12 @@ def main():
     
     c_header += "#endif // C_GENERATED_H"
 
-    dart_file += generate_decl("ffi utils")
+    dart_file += generate_decl("ffi: generated functions")
     for f in get_all_files_with_extension(C_CODE_DIR, "defs"):
         name_without_extension = path.splitext(f)[0]
         dart_file += generate_dart_ffi_utils(get_file(name_without_extension, 'defs'))
     
-    dart_file += generate_decl("generated classes")
+    dart_file += generate_decl("ffi: generated classes")
     for f in get_all_files_with_extension(C_CODE_DIR, "cclass"):
         dart_file += generate_dart_class(f)
     

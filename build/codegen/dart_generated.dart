@@ -52,8 +52,7 @@ SDLEventType SDLEventTypeFromInt(int val) {
     throw Exception('SDLEventType cannot be converted from int $val: Out of range.');
 }
 
-// ----- FFI UTILS -----
-
+// ----- FFI: GENERATED FUNCTIONS -----
 
 
 typedef CreateEventNativeSig = Pointer<Void> Function();
@@ -65,7 +64,6 @@ CreateEventSig lookupCreateEvent(DynamicLibrary lib) {
 }
 
 
-
 typedef InitRenderWindowNativeSig = Pointer<Void> Function(Pointer<Utf8>, Int32, Int32, Int32, Int32, Int32);
 
 typedef InitRenderWindowSig = Pointer<Void> Function(Pointer<Utf8>, int, int, int, int, int);
@@ -74,8 +72,7 @@ InitRenderWindowSig lookupInitRenderWindow(DynamicLibrary lib) {
     return lib.lookupFunction<InitRenderWindowNativeSig, InitRenderWindowSig>('InitRenderWindow');
 }
 
-// ----- GENERATED CLASSES -----
-
+// ----- FFI: GENERATED CLASSES -----
 
 
 typedef _generatedClasscEventPollNativeSig = Void Function(Pointer<Void>);
@@ -91,6 +88,7 @@ typedef _generatedClasscEventGetTypeSig = int Function(Pointer<Void>);
 typedef _generatedClasscEventDestroyNativeSig = Void Function(Pointer<Void>);
 
 typedef _generatedClasscEventDestroySig = void Function(Pointer<Void>);
+
 
 
 class cEvent {
@@ -129,6 +127,7 @@ class cEvent {
     }
 
 }
+
 
 typedef _generatedClasscRenderWindowLogSDLErrorNativeSig = Void Function(Pointer<Void>, Int32);
 
@@ -180,6 +179,7 @@ typedef _generatedClasscRenderWindowFillRectNativeSig = Void Function(Pointer<Vo
 typedef _generatedClasscRenderWindowFillRectSig = void Function(Pointer<Void>, int, int, int, int);
 
 
+
 class cRenderWindow {
     Pointer<Void> structPointer = Pointer.fromAddress(0);
 
@@ -214,9 +214,9 @@ class cRenderWindow {
         _DrawRect = lib.lookupFunction<_generatedClasscRenderWindowDrawRectNativeSig, _generatedClasscRenderWindowDrawRectSig>('DrawRect');
         _FillRect = lib.lookupFunction<_generatedClasscRenderWindowFillRectNativeSig, _generatedClasscRenderWindowFillRectSig>('FillRect');
     }
-     void LogSDLError(int exitCode, ) {
+     void LogSDLError(int exitCode) {
         validatePointer('LogSDLError');
-        return _LogSDLError(structPointer, exitCode, );
+        return _LogSDLError(structPointer, exitCode);
     }
 
      void Destroy() {
@@ -229,9 +229,9 @@ class cRenderWindow {
         return _GetErrorCode(structPointer, );
     }
 
-     void SetColour(int r, int g, int b, ) {
+     void SetColour(int r, int g, int b) {
         validatePointer('SetColour');
-        return _SetColour(structPointer, r, g, b, );
+        return _SetColour(structPointer, r, g, b);
     }
 
      void Flush() {
@@ -239,29 +239,30 @@ class cRenderWindow {
         return _Flush(structPointer, );
     }
 
-     void SetFullscreen(int enable, ) {
+     void SetFullscreen(int enable) {
         validatePointer('SetFullscreen');
-        return _SetFullscreen(structPointer, enable, );
+        return _SetFullscreen(structPointer, enable);
     }
 
-     void DrawPoint(int x, int y, ) {
+     void DrawPoint(int x, int y) {
         validatePointer('DrawPoint');
-        return _DrawPoint(structPointer, x, y, );
+        return _DrawPoint(structPointer, x, y);
     }
 
-     void DrawLine(int x1, int y1, int x2, int y2, ) {
+     void DrawLine(int x1, int y1, int x2, int y2) {
         validatePointer('DrawLine');
-        return _DrawLine(structPointer, x1, y1, x2, y2, );
+        return _DrawLine(structPointer, x1, y1, x2, y2);
     }
 
-     void DrawRect(int x1, int y1, int x2, int y2, ) {
+     void DrawRect(int x1, int y1, int width, int height) {
         validatePointer('DrawRect');
-        return _DrawRect(structPointer, x1, y1, x2, y2, );
+        return _DrawRect(structPointer, x1, y1, width, height);
     }
 
-     void FillRect(int x1, int y1, int x2, int y2, ) {
+     void FillRect(int x1, int y1, int width, int height) {
         validatePointer('FillRect');
-        return _FillRect(structPointer, x1, y1, x2, y2, );
+        return _FillRect(structPointer, x1, y1, width, height);
     }
 
 }
+

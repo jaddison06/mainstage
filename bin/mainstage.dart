@@ -2,7 +2,6 @@ import 'dart:ffi';
 import 'package:ffi/ffi.dart';
 import 'getLibrary.dart';
 import '../build/codegen/dart_generated.dart';
-import 'renderWindow.dart';
 import 'colour.dart';
 
 void testRenderWindow() {
@@ -42,14 +41,39 @@ void testRenderWindow() {
 
 }
 
-void testRenderWindowClass() {
-  final win = RenderWindow(
-    title: 'Mainstage',
-    width: 500,
-    height: 500,
-    backgroundColour: Colour(0, 0, 255));
-  win.start();
-  win.destroy();
+void testRenderWindowGeneratedClass() {
+  final libRW = getLibrary('RenderWindow.c');
+  final libEvent = getLibrary('Event.c');
+
+  final initRenderWindow = lookupInitRenderWindow(libRW);
+  final initEvent = lookupCreateEvent(libEvent);
+
+  final win = cRenderWindow();
+  win.structPointer = initRenderWindow(
+    'Mainstage'.toNativeUtf8(),
+    500,
+    500,
+    0,
+    0,
+    255
+  );
+
+  final event = cEvent();
+  event.structPointer = initEvent();
+
+  var frames = 0;
+  while (SDLEventTypeFromInt(event.GetType()) != SDLEventType.Quit) {
+    final pos = frames ~/ 20;
+    win.SetColour(255, 255, 0);
+    win.FillRect(pos+20, pos+20, 50, 50);
+    win.Flush();
+
+    event.Poll();
+    frames++;
+  }
+  event.Destroy();
+  win.Destroy();
+
 }
 
 void main() {/*
@@ -58,6 +82,7 @@ void main() {/*
   hello();*/
 
   //testRenderWindow();
-  testRenderWindowClass();
+  //testRenderWindowClass();
+  testRenderWindowGeneratedClass();
 
 }
