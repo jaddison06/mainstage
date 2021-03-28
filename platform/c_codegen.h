@@ -22,7 +22,8 @@ enum SDLEventType {
     FingerDown = 8,
     FingerUp = 9,
     FingerDrag = 10,
-    NotImplemented = 11,
+    WindowResize = 11,
+    NotImplemented = 12,
 };
 
 #endif // C_CODEGEN_H

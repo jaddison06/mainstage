@@ -24,6 +24,7 @@ int GetType(SDL_Event *event) {
         case SDL_FINGERDOWN: return FingerDown;
         case SDL_FINGERUP: return FingerUp;
         case SDL_FINGERMOTION: return FingerDrag;
+        case SDL_WINDOWEVENT: if (event->window.event == SDL_WINDOWEVENT_SIZE_CHANGED) { return WindowResize; }
         
         default: return NotImplemented;
     }
@@ -31,4 +32,11 @@ int GetType(SDL_Event *event) {
 
 void Destroy(SDL_Event *event) {
     free(event);
+}
+
+// getters for specific event types
+
+void GetResizeData(SDL_Event *event, int *newWidth, int *newHeight) {
+    *newWidth = event->window.data1;
+    *newHeight = event->window.data2;
 }

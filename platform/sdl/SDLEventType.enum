@@ -9,4 +9,5 @@ MouseScroll
 FingerDown
 FingerUp
 FingerDrag
+WindowResize
 NotImplemented

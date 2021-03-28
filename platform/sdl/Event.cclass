@@ -3,3 +3,4 @@ Event.c
 void Poll()
 int GetType()
 void Destroy()
+void GetResizeData(int* newWidth, int* newHeight)

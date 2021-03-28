@@ -12,6 +12,8 @@ typedef struct {
     int backgroundRed, backgroundGreen, backgroundBlue;
     
     int frameCount;
+
+    int width, height;
 } RenderWindow;
 
 RenderWindow *LogSDLError(RenderWindow *win, int exitCode) {
@@ -50,6 +52,9 @@ RenderWindow* InitRenderWindow(const char *title, int width, int height, int bac
     out->errorCode = Success;
     out->frameCount = 0;
 
+    out->width = width;
+    out->height = height;
+
     return out;
 }
 
@@ -62,6 +67,20 @@ void Destroy(RenderWindow *win) {
 
 int GetErrorCode(RenderWindow *win) {
     return win->errorCode;
+}
+
+// this does NOT actually change the window - it just stores the dimensions. 
+void UpdateDimensions(RenderWindow *win, int width, int height) {
+    win->width = width;
+    win->height = height;
+}
+
+int GetWidth(RenderWindow *win) {
+    return win->width;
+}
+
+int GetHeight(RenderWindow *win) {
+    return win->height;
 }
 
 void SetColour(RenderWindow *win, int r, int g, int b) {

@@ -177,6 +177,8 @@ def generate_dart_class(cclass_file_path):
             if params != ['']:
                 for param in params:
                     param_type, param_name = param.strip().split(' ')
+                    
+                    # if it's a pointer type, we assume it looks like "int* someParam", not "int *someParam" or "int * someParam"
                     methods[method_name]["params"][param_name] = param_type
 
     # funcsig typedefs

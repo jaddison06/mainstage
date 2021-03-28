@@ -33,6 +33,7 @@ enum SDLEventType {
     FingerDown,
     FingerUp,
     FingerDrag,
+    WindowResize,
     NotImplemented,
 }
 
@@ -48,7 +49,8 @@ SDLEventType SDLEventTypeFromInt(int val) {
     if (val == 8) { return SDLEventType.FingerDown; }
     if (val == 9) { return SDLEventType.FingerUp; }
     if (val == 10) { return SDLEventType.FingerDrag; }
-    if (val == 11) { return SDLEventType.NotImplemented; }
+    if (val == 11) { return SDLEventType.WindowResize; }
+    if (val == 12) { return SDLEventType.NotImplemented; }
     throw Exception('SDLEventType cannot be converted from int $val: Out of range.');
 }
 
@@ -90,6 +92,11 @@ typedef _generatedClasscEventDestroyNativeSig = Void Function(Pointer<Void>);
 typedef _generatedClasscEventDestroySig = void Function(Pointer<Void>);
 
 
+typedef _generatedClasscEventGetResizeDataNativeSig = Void Function(Pointer<Void>, Pointer<Int32>, Pointer<Int32>);
+
+typedef _generatedClasscEventGetResizeDataSig = void Function(Pointer<Void>, Pointer<Int32>, Pointer<Int32>);
+
+
 
 class cEvent {
     Pointer<Void> structPointer = Pointer.fromAddress(0);
@@ -103,6 +110,7 @@ class cEvent {
     late _generatedClasscEventPollSig _Poll;
     late _generatedClasscEventGetTypeSig _GetType;
     late _generatedClasscEventDestroySig _Destroy;
+    late _generatedClasscEventGetResizeDataSig _GetResizeData;
 
     cEvent() {
         final lib = getLibrary('Event.c');
@@ -110,6 +118,7 @@ class cEvent {
         _Poll = lib.lookupFunction<_generatedClasscEventPollNativeSig, _generatedClasscEventPollSig>('Poll');
         _GetType = lib.lookupFunction<_generatedClasscEventGetTypeNativeSig, _generatedClasscEventGetTypeSig>('GetType');
         _Destroy = lib.lookupFunction<_generatedClasscEventDestroyNativeSig, _generatedClasscEventDestroySig>('Destroy');
+        _GetResizeData = lib.lookupFunction<_generatedClasscEventGetResizeDataNativeSig, _generatedClasscEventGetResizeDataSig>('GetResizeData');
     }
      void Poll() {
         validatePointer('Poll');
@@ -124,6 +133,11 @@ class cEvent {
      void Destroy() {
         validatePointer('Destroy');
         return _Destroy(structPointer, );
+    }
+
+     void GetResizeData(Pointer<Int32> newWidth, Pointer<Int32> newHeight) {
+        validatePointer('GetResizeData');
+        return _GetResizeData(structPointer, newWidth, newHeight);
     }
 
 }
@@ -142,6 +156,21 @@ typedef _generatedClasscRenderWindowDestroySig = void Function(Pointer<Void>);
 typedef _generatedClasscRenderWindowGetErrorCodeNativeSig = Int32 Function(Pointer<Void>);
 
 typedef _generatedClasscRenderWindowGetErrorCodeSig = int Function(Pointer<Void>);
+
+
+typedef _generatedClasscRenderWindowUpdateDimensionsNativeSig = Void Function(Pointer<Void>, Int32, Int32);
+
+typedef _generatedClasscRenderWindowUpdateDimensionsSig = void Function(Pointer<Void>, int, int);
+
+
+typedef _generatedClasscRenderWindowGetWidthNativeSig = Int32 Function(Pointer<Void>);
+
+typedef _generatedClasscRenderWindowGetWidthSig = int Function(Pointer<Void>);
+
+
+typedef _generatedClasscRenderWindowGetHeightNativeSig = Int32 Function(Pointer<Void>);
+
+typedef _generatedClasscRenderWindowGetHeightSig = int Function(Pointer<Void>);
 
 
 typedef _generatedClasscRenderWindowSetColourNativeSig = Void Function(Pointer<Void>, Int32, Int32, Int32);
@@ -197,6 +226,9 @@ class cRenderWindow {
     late _generatedClasscRenderWindowLogSDLErrorSig _LogSDLError;
     late _generatedClasscRenderWindowDestroySig _Destroy;
     late _generatedClasscRenderWindowGetErrorCodeSig _GetErrorCode;
+    late _generatedClasscRenderWindowUpdateDimensionsSig _UpdateDimensions;
+    late _generatedClasscRenderWindowGetWidthSig _GetWidth;
+    late _generatedClasscRenderWindowGetHeightSig _GetHeight;
     late _generatedClasscRenderWindowSetColourSig _SetColour;
     late _generatedClasscRenderWindowFlushSig _Flush;
     late _generatedClasscRenderWindowGetFrameCountSig _GetFrameCount;
@@ -212,6 +244,9 @@ class cRenderWindow {
         _LogSDLError = lib.lookupFunction<_generatedClasscRenderWindowLogSDLErrorNativeSig, _generatedClasscRenderWindowLogSDLErrorSig>('LogSDLError');
         _Destroy = lib.lookupFunction<_generatedClasscRenderWindowDestroyNativeSig, _generatedClasscRenderWindowDestroySig>('Destroy');
         _GetErrorCode = lib.lookupFunction<_generatedClasscRenderWindowGetErrorCodeNativeSig, _generatedClasscRenderWindowGetErrorCodeSig>('GetErrorCode');
+        _UpdateDimensions = lib.lookupFunction<_generatedClasscRenderWindowUpdateDimensionsNativeSig, _generatedClasscRenderWindowUpdateDimensionsSig>('UpdateDimensions');
+        _GetWidth = lib.lookupFunction<_generatedClasscRenderWindowGetWidthNativeSig, _generatedClasscRenderWindowGetWidthSig>('GetWidth');
+        _GetHeight = lib.lookupFunction<_generatedClasscRenderWindowGetHeightNativeSig, _generatedClasscRenderWindowGetHeightSig>('GetHeight');
         _SetColour = lib.lookupFunction<_generatedClasscRenderWindowSetColourNativeSig, _generatedClasscRenderWindowSetColourSig>('SetColour');
         _Flush = lib.lookupFunction<_generatedClasscRenderWindowFlushNativeSig, _generatedClasscRenderWindowFlushSig>('Flush');
         _GetFrameCount = lib.lookupFunction<_generatedClasscRenderWindowGetFrameCountNativeSig, _generatedClasscRenderWindowGetFrameCountSig>('GetFrameCount');
@@ -234,6 +269,21 @@ class cRenderWindow {
      int GetErrorCode() {
         validatePointer('GetErrorCode');
         return _GetErrorCode(structPointer, );
+    }
+
+     void UpdateDimensions(int width, int height) {
+        validatePointer('UpdateDimensions');
+        return _UpdateDimensions(structPointer, width, height);
+    }
+
+     int GetWidth() {
+        validatePointer('GetWidth');
+        return _GetWidth(structPointer, );
+    }
+
+     int GetHeight() {
+        validatePointer('GetHeight');
+        return _GetHeight(structPointer, );
     }
 
      void SetColour(int r, int g, int b) {
