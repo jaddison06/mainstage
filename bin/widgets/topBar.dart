@@ -9,7 +9,7 @@ class TopBar extends Widget {
   
   @override
   void DrawLinux(cRenderWindow win) {
-    win.SetColour(fillColour.r, fillColour.g, fillColour.b);
+    setWinColour(win, fillColour);
     win.FillRect(0, 0, win.GetWidth(), 56);
   }
 }

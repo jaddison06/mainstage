@@ -1,5 +1,6 @@
 import '../dart_codegen.dart';
 import '../mainstagePlatform.dart';
+import '../colour.dart';
 
 class Widget {
   cRenderWindow? desktopRenderWindow;
@@ -34,5 +35,11 @@ class Widget {
       case MainstageTargetPlatform.Windows: return DrawWindows(desktopRenderWindow!);
       default: throw UnimplementedError('Mainstage does not currently support rendering on the platform $platform');
     }
+  }
+  
+  // utility functions
+  
+  void setWinColour(cRenderWindow win, Colour col) {
+    win.SetColour(col.r, col.g, col.b);
   }
 }
