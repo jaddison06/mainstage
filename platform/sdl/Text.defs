@@ -1,0 +1,1 @@
+void* InitTextRenderer(char*, int, void*)

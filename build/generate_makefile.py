@@ -55,7 +55,7 @@ def main():
         #makefile += f"\n{libname}: {f}\n	gcc -shared -o {libname} -fPIC {f}"
         command = f"gcc -shared -o {libname} -I ./platform -fPIC {f}"
         for lib in link_libs:
-            command += f" -l{lib}"
+            command += f" -l{lib.strip()}"
         makefile += generate_makefile_item(libname, [f], [command])
     
     # operations

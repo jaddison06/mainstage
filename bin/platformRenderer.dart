@@ -18,4 +18,16 @@ class PlatformRenderer {
       default: throw UnimplementedError('Cannot get width on platform $platform');
     }
   }
+
+  int GetHeight() {
+    switch(platform) {
+      case MainstageTargetPlatform.Linux:
+      case MainstageTargetPlatform.MacOS:
+      case MainstageTargetPlatform.Windows:
+      return desktop!.GetHeight();
+      
+      default: throw UnimplementedError('Cannot get height on platform $platform');
+    }
+  }
+
 }

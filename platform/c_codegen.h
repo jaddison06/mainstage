@@ -10,11 +10,9 @@ enum MouseButton {
     MouseButton_Unknown = 3,
 };
 
-enum PlatformErrorCode {
-    PlatformErrorCode_Success = 0,
-    PlatformErrorCode_SDL_InitVideo_Fail = 1,
-    PlatformErrorCode_SDL_CreateWindow_Fail = 2,
-    PlatformErrorCode_SDL_CreateRenderer_Fail = 3,
+enum TextInitErrorCode {
+    TextInitErrorCode_Success = 0,
+    TextInitErrorCode_FontInitFailed = 1,
 };
 
 enum KeyCode {
@@ -156,6 +154,13 @@ enum SDLEventType {
     SDLEventType_FingerDrag = 10,
     SDLEventType_WindowResize = 11,
     SDLEventType_NotImplemented = 12,
+};
+
+enum SDLInitErrorCode {
+    SDLInitErrorCode_Success = 0,
+    SDLInitErrorCode_SDL_InitVideo_Fail = 1,
+    SDLInitErrorCode_SDL_CreateWindow_Fail = 2,
+    SDLInitErrorCode_SDL_CreateRenderer_Fail = 3,
 };
 
 #endif // C_CODEGEN_H

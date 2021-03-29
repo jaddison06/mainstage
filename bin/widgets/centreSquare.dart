@@ -1,6 +1,6 @@
 import 'widget.dart';
 import '../renderWindow.dart';
-import '../colour.dart';
+import 'colour.dart';
 import 'square.dart';
 
 class CentreSquare extends Widget {

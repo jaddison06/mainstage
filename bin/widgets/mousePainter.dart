@@ -1,16 +1,8 @@
 import 'widget.dart';
-import '../colour.dart';
+import 'colour.dart';
 import '../renderWindow.dart';
 import '../dart_codegen.dart';
-
-class Point {
-  final int x;
-  final int y;
-  final int winX;
-  final int winY;
-  
-  Point(this.x, this.y, this.winX, this.winY);
-}
+import 'point.dart';
 
 class MousePainter extends Widget {
   final Colour col;

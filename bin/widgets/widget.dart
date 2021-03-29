@@ -1,6 +1,6 @@
 import '../renderWindow.dart';
 import '../mainstagePlatform.dart';
-import '../colour.dart';
+import 'colour.dart';
 import '../platformRenderer.dart';
 import '../dart_codegen.dart';
 
@@ -63,7 +63,7 @@ class Widget {
   
   // utility functions
   
-  void setWinColour(RenderWindow win, Colour col) {
-    win.SetColour(col.r, col.g, col.b);
+  void setWinColour(RenderWindow win, Colour col, [int alpha = 255]) {
+    win.SetColour(col.r, col.g, col.b, alpha);
   }
 }

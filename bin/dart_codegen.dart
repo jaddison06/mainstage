@@ -30,26 +30,20 @@ String MouseButtonToString(MouseButton val) {
     return '';
 }
 
-enum PlatformErrorCode {
+enum TextInitErrorCode {
     Success,
-    SDL_InitVideo_Fail,
-    SDL_CreateWindow_Fail,
-    SDL_CreateRenderer_Fail,
+    FontInitFailed,
 }
 
-PlatformErrorCode PlatformErrorCodeFromInt(int val) {
-    if (val == 0) { return PlatformErrorCode.Success; }
-    if (val == 1) { return PlatformErrorCode.SDL_InitVideo_Fail; }
-    if (val == 2) { return PlatformErrorCode.SDL_CreateWindow_Fail; }
-    if (val == 3) { return PlatformErrorCode.SDL_CreateRenderer_Fail; }
-    throw Exception('PlatformErrorCode cannot be converted from int $val: Out of range.');
+TextInitErrorCode TextInitErrorCodeFromInt(int val) {
+    if (val == 0) { return TextInitErrorCode.Success; }
+    if (val == 1) { return TextInitErrorCode.FontInitFailed; }
+    throw Exception('TextInitErrorCode cannot be converted from int $val: Out of range.');
 }
 
-String PlatformErrorCodeToString(PlatformErrorCode val) {
-    if (val == PlatformErrorCode.Success) { return 'Success'; }
-    if (val == PlatformErrorCode.SDL_InitVideo_Fail) { return 'SDL_InitVideo_Fail'; }
-    if (val == PlatformErrorCode.SDL_CreateWindow_Fail) { return 'SDL_CreateWindow_Fail'; }
-    if (val == PlatformErrorCode.SDL_CreateRenderer_Fail) { return 'SDL_CreateRenderer_Fail'; }
+String TextInitErrorCodeToString(TextInitErrorCode val) {
+    if (val == TextInitErrorCode.Success) { return 'Success'; }
+    if (val == TextInitErrorCode.FontInitFailed) { return 'FontInitFailed'; }
     // to please the compiler - a human would use a switch statement
     return '';
 }
@@ -483,6 +477,30 @@ String SDLEventTypeToString(SDLEventType val) {
     return '';
 }
 
+enum SDLInitErrorCode {
+    Success,
+    SDL_InitVideo_Fail,
+    SDL_CreateWindow_Fail,
+    SDL_CreateRenderer_Fail,
+}
+
+SDLInitErrorCode SDLInitErrorCodeFromInt(int val) {
+    if (val == 0) { return SDLInitErrorCode.Success; }
+    if (val == 1) { return SDLInitErrorCode.SDL_InitVideo_Fail; }
+    if (val == 2) { return SDLInitErrorCode.SDL_CreateWindow_Fail; }
+    if (val == 3) { return SDLInitErrorCode.SDL_CreateRenderer_Fail; }
+    throw Exception('SDLInitErrorCode cannot be converted from int $val: Out of range.');
+}
+
+String SDLInitErrorCodeToString(SDLInitErrorCode val) {
+    if (val == SDLInitErrorCode.Success) { return 'Success'; }
+    if (val == SDLInitErrorCode.SDL_InitVideo_Fail) { return 'SDL_InitVideo_Fail'; }
+    if (val == SDLInitErrorCode.SDL_CreateWindow_Fail) { return 'SDL_CreateWindow_Fail'; }
+    if (val == SDLInitErrorCode.SDL_CreateRenderer_Fail) { return 'SDL_CreateRenderer_Fail'; }
+    // to please the compiler - a human would use a switch statement
+    return '';
+}
+
 // ----- FFI: GENERATED FUNCTIONS -----
 
 
@@ -492,6 +510,15 @@ typedef CreateEventSig = Pointer<Void> Function();
 
 CreateEventSig lookupCreateEvent(DynamicLibrary lib) {
     return lib.lookupFunction<_CreateEventNativeSig, CreateEventSig>('CreateEvent');
+}
+
+
+typedef _InitTextRendererNativeSig = Pointer<Void> Function(Pointer<Utf8>, Int32, Pointer<Void>);
+
+typedef InitTextRendererSig = Pointer<Void> Function(Pointer<Utf8>, int, Pointer<Void>);
+
+InitTextRendererSig lookupInitTextRenderer(DynamicLibrary lib) {
+    return lib.lookupFunction<_InitTextRendererNativeSig, InitTextRendererSig>('InitTextRenderer');
 }
 
 
@@ -608,6 +635,60 @@ class cEvent {
 }
 
 
+typedef __classcTextDestroyNativeSig = Void Function(Pointer<Void>);
+
+typedef _classcTextDestroySig = void Function(Pointer<Void>);
+
+
+typedef __classcTextGetErrorCodeNativeSig = Int32 Function(Pointer<Void>);
+
+typedef _classcTextGetErrorCodeSig = int Function(Pointer<Void>);
+
+
+typedef __classcTextDrawTextNativeSig = Void Function(Pointer<Void>, Pointer<Utf8>, Int32, Int32, Int32, Int32, Int32, Int32);
+
+typedef _classcTextDrawTextSig = void Function(Pointer<Void>, Pointer<Utf8>, int, int, int, int, int, int);
+
+
+
+class cText {
+    Pointer<Void> structPointer = Pointer.fromAddress(0);
+
+    void validatePointer(String methodName) {
+        if (structPointer.address == 0) {
+            throw Exception('cText.$methodName was called, but structPointer is a nullptr.');
+        }
+    }
+
+    late _classcTextDestroySig _Destroy;
+    late _classcTextGetErrorCodeSig _GetErrorCode;
+    late _classcTextDrawTextSig _DrawText;
+
+    cText() {
+        final lib = getLibrary('Text.c');
+
+        _Destroy = lib.lookupFunction<__classcTextDestroyNativeSig, _classcTextDestroySig>('Destroy');
+        _GetErrorCode = lib.lookupFunction<__classcTextGetErrorCodeNativeSig, _classcTextGetErrorCodeSig>('GetErrorCode');
+        _DrawText = lib.lookupFunction<__classcTextDrawTextNativeSig, _classcTextDrawTextSig>('DrawText');
+    }
+     void Destroy() {
+        validatePointer('Destroy');
+        return _Destroy(structPointer, );
+    }
+
+     int GetErrorCode() {
+        validatePointer('GetErrorCode');
+        return _GetErrorCode(structPointer, );
+    }
+
+     void DrawText(Pointer<Utf8> text, int x, int y, int r, int g, int b, int alpha) {
+        validatePointer('DrawText');
+        return _DrawText(structPointer, text, x, y, r, g, b, alpha);
+    }
+
+}
+
+
 typedef __classcRenderWindowLogSDLErrorNativeSig = Void Function(Pointer<Void>, Int32);
 
 typedef _classcRenderWindowLogSDLErrorSig = void Function(Pointer<Void>, int);
@@ -616,6 +697,11 @@ typedef _classcRenderWindowLogSDLErrorSig = void Function(Pointer<Void>, int);
 typedef __classcRenderWindowDestroyNativeSig = Void Function(Pointer<Void>);
 
 typedef _classcRenderWindowDestroySig = void Function(Pointer<Void>);
+
+
+typedef __classcRenderWindowGetRendererNativeSig = Pointer<Void> Function(Pointer<Void>);
+
+typedef _classcRenderWindowGetRendererSig = Pointer<Void> Function(Pointer<Void>);
 
 
 typedef __classcRenderWindowGetErrorCodeNativeSig = Int32 Function(Pointer<Void>);
@@ -638,9 +724,9 @@ typedef __classcRenderWindowGetHeightNativeSig = Int32 Function(Pointer<Void>);
 typedef _classcRenderWindowGetHeightSig = int Function(Pointer<Void>);
 
 
-typedef __classcRenderWindowSetColourNativeSig = Void Function(Pointer<Void>, Int32, Int32, Int32);
+typedef __classcRenderWindowSetColourNativeSig = Void Function(Pointer<Void>, Int32, Int32, Int32, Int32);
 
-typedef _classcRenderWindowSetColourSig = void Function(Pointer<Void>, int, int, int);
+typedef _classcRenderWindowSetColourSig = void Function(Pointer<Void>, int, int, int, int);
 
 
 typedef __classcRenderWindowFlushNativeSig = Void Function(Pointer<Void>);
@@ -690,6 +776,7 @@ class cRenderWindow {
 
     late _classcRenderWindowLogSDLErrorSig _LogSDLError;
     late _classcRenderWindowDestroySig _Destroy;
+    late _classcRenderWindowGetRendererSig _GetRenderer;
     late _classcRenderWindowGetErrorCodeSig _GetErrorCode;
     late _classcRenderWindowUpdateDimensionsSig _UpdateDimensions;
     late _classcRenderWindowGetWidthSig _GetWidth;
@@ -708,6 +795,7 @@ class cRenderWindow {
 
         _LogSDLError = lib.lookupFunction<__classcRenderWindowLogSDLErrorNativeSig, _classcRenderWindowLogSDLErrorSig>('LogSDLError');
         _Destroy = lib.lookupFunction<__classcRenderWindowDestroyNativeSig, _classcRenderWindowDestroySig>('Destroy');
+        _GetRenderer = lib.lookupFunction<__classcRenderWindowGetRendererNativeSig, _classcRenderWindowGetRendererSig>('GetRenderer');
         _GetErrorCode = lib.lookupFunction<__classcRenderWindowGetErrorCodeNativeSig, _classcRenderWindowGetErrorCodeSig>('GetErrorCode');
         _UpdateDimensions = lib.lookupFunction<__classcRenderWindowUpdateDimensionsNativeSig, _classcRenderWindowUpdateDimensionsSig>('UpdateDimensions');
         _GetWidth = lib.lookupFunction<__classcRenderWindowGetWidthNativeSig, _classcRenderWindowGetWidthSig>('GetWidth');
@@ -731,6 +819,11 @@ class cRenderWindow {
         return _Destroy(structPointer, );
     }
 
+     Pointer<Void> GetRenderer() {
+        validatePointer('GetRenderer');
+        return _GetRenderer(structPointer, );
+    }
+
      int GetErrorCode() {
         validatePointer('GetErrorCode');
         return _GetErrorCode(structPointer, );
@@ -751,9 +844,9 @@ class cRenderWindow {
         return _GetHeight(structPointer, );
     }
 
-     void SetColour(int r, int g, int b) {
+     void SetColour(int r, int g, int b, int alpha) {
         validatePointer('SetColour');
-        return _SetColour(structPointer, r, g, b);
+        return _SetColour(structPointer, r, g, b, alpha);
     }
 
      void Flush() {

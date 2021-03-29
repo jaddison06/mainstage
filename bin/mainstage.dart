@@ -1,14 +1,17 @@
 import 'mainstageApp.dart';
-import 'colour.dart';
+import 'widgets/colour.dart';
 
 import 'widgets/centreSquare.dart';
-import 'widgets/mousePainter.dart';
+import 'widgets/splineDrawer.dart';
 import 'widgets/keyboardPrinter.dart';
+import 'widgets/text.dart';
 
 void main() {
   final app = MainstageApp(
     title: 'Mainstage',
-    backgroundCol: Colour(0, 0, 255)
+    backgroundCol: Colour(0, 0, 255),
+    fontFile: 'res/Menlo-Regular.ttf',
+    fontSize: 25
   );
   
   app.addWidget(CentreSquare(
@@ -16,11 +19,13 @@ void main() {
     size: 50
   ));
   
-  app.addWidget(MousePainter(
+  app.addWidget(SplineDrawer(
     col: Colour(255, 255, 0)
   ));
 
-  app.addWidget(KeyboardPrinter());
+  app.addWidget(Text(x: 20, y: 20, text: 'Penis lol', col: Colour(255, 255, 0)));
+
+  //app.addWidget(KeyboardPrinter());
   
   app.runApp();
 

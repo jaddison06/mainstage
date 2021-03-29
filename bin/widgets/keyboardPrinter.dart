@@ -1,5 +1,6 @@
 import 'widget.dart';
 import '../dart_codegen.dart';
+import '../renderWindow.dart';
 
 class KeyboardPrinter extends Widget {
   @override
@@ -8,5 +9,5 @@ class KeyboardPrinter extends Widget {
   }
 
   @override
-  void DrawLinux(cRenderWindow win) {}
+  void DrawLinux(RenderWindow win) {}
 }

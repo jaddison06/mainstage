@@ -1,0 +1,3 @@
+void Destroy()
+int GetErrorCode()
+void DrawText(char* text, int x, int y, int r, int g, int b, int alpha)

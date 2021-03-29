@@ -34,22 +34,22 @@ RenderWindow* InitRenderWindow(const char *title, int width, int height, int bac
     RenderWindow* out = (RenderWindow *) malloc(sizeof(RenderWindow));
     
     if (SDL_Init(SDL_INIT_VIDEO) != 0) {
-        return LogSDLError(out, PlatformErrorCode_SDL_InitVideo_Fail);
+        return LogSDLError(out, SDLInitErrorCode_SDL_InitVideo_Fail);
     }
     out->win = SDL_CreateWindow(title, 100, 100, width, height, SDL_WINDOW_SHOWN | SDL_WINDOW_RESIZABLE);
     if (out->win == NULL) {
-        return LogSDLError(out, PlatformErrorCode_SDL_CreateWindow_Fail);
+        return LogSDLError(out, SDLInitErrorCode_SDL_CreateWindow_Fail);
     }
     out->ren = SDL_CreateRenderer(out->win, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
     if (out->ren == NULL) {
-        return LogSDLError(out, PlatformErrorCode_SDL_CreateRenderer_Fail);
+        return LogSDLError(out, SDLInitErrorCode_SDL_CreateRenderer_Fail);
     }
     
     out->backgroundRed = backgroundRed;
     out->backgroundGreen = backgroundGreen;
     out->backgroundBlue = backgroundBlue;
 
-    out->errorCode = PlatformErrorCode_Success;
+    out->errorCode = SDLInitErrorCode_Success;
     out->frameCount = 0;
 
     out->width = width;
@@ -63,6 +63,10 @@ void Destroy(RenderWindow *win) {
     SDL_DestroyWindow(win->win);
     SDL_Quit();
     free(win);
+}
+
+void *GetRenderer(RenderWindow *win) {
+    return win->ren;
 }
 
 int GetErrorCode(RenderWindow *win) {
@@ -83,13 +87,13 @@ int GetHeight(RenderWindow *win) {
     return win->height;
 }
 
-void SetColour(RenderWindow *win, int r, int g, int b) {
-    SDL_SetRenderDrawColor(win->ren, r, g, b, SDL_ALPHA_OPAQUE);
+void SetColour(RenderWindow *win, int r, int g, int b, int alpha) {
+    SDL_SetRenderDrawColor(win->ren, r, g, b, alpha);
 }
 
 void Flush(RenderWindow *win) {
     SDL_RenderPresent(win->ren);
-    SetColour(win, win->backgroundRed, win->backgroundGreen, win->backgroundBlue);
+    SetColour(win, win->backgroundRed, win->backgroundGreen, win->backgroundBlue, SDL_ALPHA_OPAQUE);
     SDL_RenderClear(win->ren);
 
     win->frameCount++;

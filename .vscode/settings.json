@@ -1,0 +1,6 @@
+{
+    "files.associations": {
+        "*.enum": "plaintext",
+        "c_codegen.h": "c"
+    }
+}

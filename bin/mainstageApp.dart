@@ -1,7 +1,7 @@
 import 'widgets/widget.dart';
 import 'renderWindow.dart';
 import 'dart_codegen.dart';
-import 'colour.dart';
+import 'widgets/colour.dart';
 import 'getLibrary.dart';
 import 'dart:ffi';
 import 'package:ffi/ffi.dart';
@@ -16,11 +16,11 @@ class MainstageApp {
   late Pointer<Int32> _eventPtrX;
   late Pointer<Int32> _eventPtrY;
 
-  MainstageApp({required String title, required Colour backgroundCol}) {
+  MainstageApp({required String title, required Colour backgroundCol, required String fontFile, int fontSize = 18}) {
     final libEvent = getLibrary('Event.c');
     _initEvent = lookupCreateEvent(libEvent);
-
-    _win = RenderWindow(title, 500, 500, backgroundCol);
+    
+    _win = RenderWindow(title, 500, 500, backgroundCol, fontFile, fontSize);
     
     // event methods that need to return x & y do so by modifying pointers.
     // we alloc these once & use them wherever we need to get an x, y pair.
@@ -112,6 +112,7 @@ class MainstageApp {
   }
   
   void destroy() {
+    _win.DestroyTextRenderer();
     _win.Destroy();
 
     malloc.free(_eventPtrX);
