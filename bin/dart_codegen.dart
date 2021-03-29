@@ -30,24 +30,6 @@ String MouseButtonToString(MouseButton val) {
     return '';
 }
 
-enum TextInitErrorCode {
-    Success,
-    FontInitFailed,
-}
-
-TextInitErrorCode TextInitErrorCodeFromInt(int val) {
-    if (val == 0) { return TextInitErrorCode.Success; }
-    if (val == 1) { return TextInitErrorCode.FontInitFailed; }
-    throw Exception('TextInitErrorCode cannot be converted from int $val: Out of range.');
-}
-
-String TextInitErrorCodeToString(TextInitErrorCode val) {
-    if (val == TextInitErrorCode.Success) { return 'Success'; }
-    if (val == TextInitErrorCode.FontInitFailed) { return 'FontInitFailed'; }
-    // to please the compiler - a human would use a switch statement
-    return '';
-}
-
 enum KeyCode {
     A,
     B,
@@ -513,15 +495,6 @@ CreateEventSig lookupCreateEvent(DynamicLibrary lib) {
 }
 
 
-typedef _InitTextRendererNativeSig = Pointer<Void> Function(Pointer<Utf8>, Int32, Pointer<Void>);
-
-typedef InitTextRendererSig = Pointer<Void> Function(Pointer<Utf8>, int, Pointer<Void>);
-
-InitTextRendererSig lookupInitTextRenderer(DynamicLibrary lib) {
-    return lib.lookupFunction<_InitTextRendererNativeSig, InitTextRendererSig>('InitTextRenderer');
-}
-
-
 typedef _InitRenderWindowNativeSig = Pointer<Void> Function(Pointer<Utf8>, Int32, Int32, Int32, Int32, Int32);
 
 typedef InitRenderWindowSig = Pointer<Void> Function(Pointer<Utf8>, int, int, int, int, int);
@@ -630,60 +603,6 @@ class cEvent {
      int GetKeyPressReleaseData() {
         validatePointer('GetKeyPressReleaseData');
         return _GetKeyPressReleaseData(structPointer, );
-    }
-
-}
-
-
-typedef __classcTextDestroyNativeSig = Void Function(Pointer<Void>);
-
-typedef _classcTextDestroySig = void Function(Pointer<Void>);
-
-
-typedef __classcTextGetErrorCodeNativeSig = Int32 Function(Pointer<Void>);
-
-typedef _classcTextGetErrorCodeSig = int Function(Pointer<Void>);
-
-
-typedef __classcTextDrawTextNativeSig = Void Function(Pointer<Void>, Pointer<Utf8>, Int32, Int32, Int32, Int32, Int32, Int32);
-
-typedef _classcTextDrawTextSig = void Function(Pointer<Void>, Pointer<Utf8>, int, int, int, int, int, int);
-
-
-
-class cText {
-    Pointer<Void> structPointer = Pointer.fromAddress(0);
-
-    void validatePointer(String methodName) {
-        if (structPointer.address == 0) {
-            throw Exception('cText.$methodName was called, but structPointer is a nullptr.');
-        }
-    }
-
-    late _classcTextDestroySig _Destroy;
-    late _classcTextGetErrorCodeSig _GetErrorCode;
-    late _classcTextDrawTextSig _DrawText;
-
-    cText() {
-        final lib = getLibrary('Text.c');
-
-        _Destroy = lib.lookupFunction<__classcTextDestroyNativeSig, _classcTextDestroySig>('Destroy');
-        _GetErrorCode = lib.lookupFunction<__classcTextGetErrorCodeNativeSig, _classcTextGetErrorCodeSig>('GetErrorCode');
-        _DrawText = lib.lookupFunction<__classcTextDrawTextNativeSig, _classcTextDrawTextSig>('DrawText');
-    }
-     void Destroy() {
-        validatePointer('Destroy');
-        return _Destroy(structPointer, );
-    }
-
-     int GetErrorCode() {
-        validatePointer('GetErrorCode');
-        return _GetErrorCode(structPointer, );
-    }
-
-     void DrawText(Pointer<Utf8> text, int x, int y, int r, int g, int b, int alpha) {
-        validatePointer('DrawText');
-        return _DrawText(structPointer, text, x, y, r, g, b, alpha);
     }
 
 }

@@ -112,7 +112,6 @@ class MainstageApp {
   }
   
   void destroy() {
-    _win.DestroyTextRenderer();
     _win.Destroy();
 
     malloc.free(_eventPtrX);

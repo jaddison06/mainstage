@@ -10,11 +10,6 @@ enum MouseButton {
     MouseButton_Unknown = 3,
 };
 
-enum TextInitErrorCode {
-    TextInitErrorCode_Success = 0,
-    TextInitErrorCode_FontInitFailed = 1,
-};
-
 enum KeyCode {
     KeyCode_A = 0,
     KeyCode_B = 1,

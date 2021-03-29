@@ -13,7 +13,6 @@ class SplineDrawer extends Widget {
   int? _pointIndexBeingModified;
 
   final Colour col;
-  bool _recordPoints = false;
   
   bool _cancelKeyPressed = false;
   bool _mouseIsDown = false;
