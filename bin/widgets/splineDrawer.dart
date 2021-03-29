@@ -14,7 +14,6 @@ class SplineDrawer extends Widget {
 
   final Colour col;
   
-  bool _cancelKeyPressed = false;
   bool _mouseIsDown = false;
   
   bool _showTemporary = true;
@@ -77,21 +76,11 @@ class SplineDrawer extends Widget {
   @override
   void OnKeyDown(KeyCode key) {
     if (key == KeyCode.Backspace || key == KeyCode.Escape) {
-      if (!_cancelKeyPressed) {
-        if (_showTemporary) {
-          _showTemporary = false;
-        } else if (_points.isNotEmpty) {
-          _points.removeLast();
-        }
+      if (_showTemporary) {
+        _showTemporary = false;
+      } else if (_points.isNotEmpty) {
+        _points.removeLast();
       }
-      _cancelKeyPressed = true;
-    }
-  }
-
-  @override
-  void OnKeyUp(KeyCode key) {
-    if (key == KeyCode.Backspace || key == KeyCode.Escape) {
-      _cancelKeyPressed = false;
     }
   }
 

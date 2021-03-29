@@ -23,7 +23,7 @@ void main() {
     col: Colour(255, 255, 0)
   ));
 
-  app.addWidget(Text(x: 30, y: 30, text: 'Penis lol', col: Colour(255, 255, 0)));
+  //app.addWidget(Text(x: 30, y: 30, text: 'Penis lol', col: Colour(255, 255, 0)));
 
   //app.addWidget(KeyboardPrinter());
   

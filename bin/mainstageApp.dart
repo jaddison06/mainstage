@@ -12,7 +12,8 @@ class MainstageApp {
   late RenderWindow _win;
   late CreateEventSig _initEvent;
   
-
+  Map<KeyCode, bool> _pressedKeys = {};
+  
   late Pointer<Int32> _eventPtrX;
   late Pointer<Int32> _eventPtrY;
 
@@ -27,6 +28,10 @@ class MainstageApp {
     // they are NOT guaranteed to keep their values between function calls.
     _eventPtrX = malloc<Int32>();
     _eventPtrY = malloc<Int32>();
+    
+    for (var key in KeyCode.values) {
+      _pressedKeys[key] = false;
+    }
   }
 
   void runApp() {
@@ -77,17 +82,31 @@ class MainstageApp {
 
           break;
         }
-        case SDLEventType.KeyDown:
+        case SDLEventType.KeyDown: {
+          final key = KeyCodeFromInt(event.GetKeyPressReleaseData());
+          // double exclamation marks - ugly! We can assert the KeyCode? because the keys (pun intended) of _pressedKeys
+          // are equal to KeyCode.values .
+          //
+          // the reason for this slight hack is that some keys will fire loads of events for as long as they're held,
+          // whereas some will only fire the one event when they're first pressed.
+          if (!_pressedKeys[key]!) {
+            for (var widget in _widgets) {
+              widget.OnKeyDown(key);
+            }
+            // map lookup is kinda expensive, especially w/ that many keys, so we'll only update the value if it needs it.
+            _pressedKeys[key] = true;
+          }
+          
+          break;
+        }
         case SDLEventType.KeyUp: {
           final key = KeyCodeFromInt(event.GetKeyPressReleaseData());
-
           for (var widget in _widgets) {
-            if (eType == SDLEventType.KeyDown) {
-              widget.OnKeyDown(key);
-            } else {
-              widget.OnKeyUp(key);
-            }
+            widget.OnKeyUp(key);
           }
+
+          _pressedKeys[key] = false;
+
           break;
         }
         
