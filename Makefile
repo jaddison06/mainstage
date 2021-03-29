@@ -1,4 +1,4 @@
-all: build/libs/libRenderWindow.so build/libs/libTest.so build/libs/libEvent.so codegen
+all: codegen build/libs/libRenderWindow.so build/libs/libTest.so build/libs/libEvent.so
 
 build/libs/libRenderWindow.so: platform/sdl/RenderWindow.c
 	gcc -shared -o build/libs/libRenderWindow.so -I ./platform -fPIC platform/sdl/RenderWindow.c -lSDL2
@@ -17,6 +17,8 @@ run: all
 clean:
 	rm -rf build/libs
 	mkdir build/libs
+	rm bin/dart_codegen.dart
+	rm platform/c_codegen.h
 
 makefile:
 	python3 ./build/generate_makefile.py

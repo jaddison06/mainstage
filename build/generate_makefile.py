@@ -60,13 +60,13 @@ def main():
     
     # operations
     makefile += generate_makefile_item("run", ["all"], ["dart run"])
-    makefile += generate_makefile_item("clean", [], [F"rm -rf {LIB_DIR}", F"mkdir {LIB_DIR}"])
+    makefile += generate_makefile_item("clean", [], [f"rm -rf {LIB_DIR}", f"mkdir {LIB_DIR}", f"rm {DART_CODEGEN_FNAME}", f"rm {C_CODEGEN_FNAME}"])
     makefile += generate_makefile_item("makefile", [], ["python3 ./build/generate_makefile.py"])
     makefile += generate_makefile_item("codegen", [], ["python3 ./build/codegen.py"])
     
     # "all" as first target
     all_targets = libnames.copy()
-    all_targets.append("codegen")
+    all_targets.insert(0, "codegen")
     makefile = generate_makefile_item("all", all_targets, []) + makefile
     
     with open("Makefile", "wt") as fh: fh.write(makefile)

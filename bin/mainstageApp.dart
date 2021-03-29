@@ -77,6 +77,19 @@ class MainstageApp {
 
           break;
         }
+        case SDLEventType.KeyDown:
+        case SDLEventType.KeyUp: {
+          final key = KeyCodeFromInt(event.GetKeyPressReleaseData());
+
+          for (var widget in _widgets) {
+            if (eType == SDLEventType.KeyDown) {
+              widget.OnKeyDown(key);
+            } else {
+              widget.OnKeyUp(key);
+            }
+          }
+          break;
+        }
         
         default: {}
       }

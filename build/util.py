@@ -4,6 +4,9 @@ import os.path as path
 C_CODE_DIR = "platform"
 LIB_DIR = "build/libs"
 
+DART_CODEGEN_FNAME = "bin/dart_codegen.dart"
+C_CODEGEN_FNAME = "platform/c_codegen.h"
+
 def get_all_files_with_extension(dirname, extension):
     
     # get full relative path

@@ -57,6 +57,9 @@ class Widget {
 
   void OnMouseDown(int x, int y, MouseButton button) {}
   void OnMouseUp(int x, int y, MouseButton button) {}
+
+  void OnKeyDown(KeyCode key) {}
+  void OnKeyUp(KeyCode key) {}
   
   // utility functions
   

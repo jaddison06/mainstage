@@ -13,8 +13,8 @@ def generate_dart_enum(name):
     # enum definition
     out = "enum " + name + " {\n"
     for line in lines:
-        val = line.split('//')[0].strip()
-        if not val.isspace():
+        if line and not line.isspace():
+            val = line.split('//')[0].strip()
             out += f"    {val},\n"
     out += "}\n\n"
 
@@ -22,8 +22,8 @@ def generate_dart_enum(name):
     out += f"{name} {name}FromInt(int val) "
     out += "{\n"
     for i, line in enumerate(lines):
-        val = line.split('//')[0].strip()
-        if not val.isspace():
+        if line and not line.isspace():
+            val = line.split('//')[0].strip()
             out += f"    if (val == {i}) "
             out += "{"
             out += f" return {name}.{val}; "
@@ -35,19 +35,20 @@ def generate_dart_enum(name):
     out += f"String {name}ToString({name} val) "
     out += "{\n"
     for line in lines:
-        if "//" in line:
-            # custom string
-            val, repr = line.split('//')
-            out += f"    if (val == {name}.{val.strip()}) "
-            out += "{"
-            out += f" return '{repr.strip()}'; "
-            out += "}\n"
-        else:
-            val = line.strip()
-            out += f"    if (val == {name}.{val}) "
-            out += "{"
-            out += f" return '{val}'; "
-            out += "}\n"
+        if line and not line.isspace():
+            if "//" in line:
+                # custom string
+                val, repr = line.split('//')
+                out += f"    if (val == {name}.{val.strip()}) "
+                out += "{"
+                out += f" return '{repr.strip()}'; "
+                out += "}\n"
+            else:
+                val = line.strip()
+                out += f"    if (val == {name}.{val}) "
+                out += "{"
+                out += f" return '{val}'; "
+                out += "}\n"
     out += "    // to please the compiler - a human would use a switch statement\n    return '';\n"
     out += "}\n\n"
 
@@ -58,9 +59,10 @@ def generate_c_enum(name):
     lines = get_file(name, 'enum')
     name = path.basename(name)
     out = "enum " + name + " {\n"
-    for i, val in enumerate(lines):
-        if not val.isspace():
-            out += f"    {val} = {i},\n"
+    for i, line in enumerate(lines):
+        if line and not line.isspace():
+            val = line.split('//')[0].strip()
+            out += f"    {name}_{val} = {i},\n"
     out += "};\n\n"
     return out
 
@@ -129,7 +131,7 @@ def generate_dart_ffi_utils(defs_file_lines):
     out = ""
     
     for line in defs_file_lines:
-        if not line.isspace():
+        if line and not line.isspace():
             return_type_and_name, raw_params = line.split('(')
             return_type, name = return_type_and_name.split(' ')
             params = list(map(
@@ -187,7 +189,7 @@ def generate_dart_class(cclass_file_path):
     methods = {}
     
     for line in lines:
-        if not line.isspace():
+        if line and not line.isspace():
             type_and_name, raw_params = line.split('(')
             raw_params = raw_params[:-1]
             type, method_name = type_and_name.split(' ')
@@ -294,8 +296,8 @@ def main():
         dart_file += generate_dart_class(f)
     
 
-    with open("platform/c_codegen.h", "wt") as fh: fh.write(c_header)
-    with open("bin/dart_codegen.dart", "wt") as fh: fh.write(dart_file)
+    with open(C_CODEGEN_FNAME, "wt") as fh: fh.write(c_header)
+    with open(DART_CODEGEN_FNAME, "wt") as fh: fh.write(dart_file)
 
 
 if __name__ == '__main__': main()
