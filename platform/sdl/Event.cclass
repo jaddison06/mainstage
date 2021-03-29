@@ -1,5 +1,3 @@
-Event.c
-
 void Poll()
 int GetType()
 void Destroy()

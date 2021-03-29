@@ -21,6 +21,15 @@ MouseButton MouseButtonFromInt(int val) {
     throw Exception('MouseButton cannot be converted from int $val: Out of range.');
 }
 
+String MouseButtonToString(MouseButton val) {
+    if (val == MouseButton.Left) { return 'Left'; }
+    if (val == MouseButton.Middle) { return 'Middle'; }
+    if (val == MouseButton.Right) { return 'Right'; }
+    if (val == MouseButton.Unknown) { return 'Unknown'; }
+    // to please the compiler - a human would use a switch statement
+    return '';
+}
+
 enum PlatformErrorCode {
     Success,
     SDL_InitVideo_Fail,
@@ -34,6 +43,15 @@ PlatformErrorCode PlatformErrorCodeFromInt(int val) {
     if (val == 2) { return PlatformErrorCode.SDL_CreateWindow_Fail; }
     if (val == 3) { return PlatformErrorCode.SDL_CreateRenderer_Fail; }
     throw Exception('PlatformErrorCode cannot be converted from int $val: Out of range.');
+}
+
+String PlatformErrorCodeToString(PlatformErrorCode val) {
+    if (val == PlatformErrorCode.Success) { return 'Success'; }
+    if (val == PlatformErrorCode.SDL_InitVideo_Fail) { return 'SDL_InitVideo_Fail'; }
+    if (val == PlatformErrorCode.SDL_CreateWindow_Fail) { return 'SDL_CreateWindow_Fail'; }
+    if (val == PlatformErrorCode.SDL_CreateRenderer_Fail) { return 'SDL_CreateRenderer_Fail'; }
+    // to please the compiler - a human would use a switch statement
+    return '';
 }
 
 enum SDLEventType {
@@ -69,57 +87,75 @@ SDLEventType SDLEventTypeFromInt(int val) {
     throw Exception('SDLEventType cannot be converted from int $val: Out of range.');
 }
 
+String SDLEventTypeToString(SDLEventType val) {
+    if (val == SDLEventType.Quit) { return 'Quit'; }
+    if (val == SDLEventType.LowMemory) { return 'LowMemory'; }
+    if (val == SDLEventType.KeyDown) { return 'KeyDown'; }
+    if (val == SDLEventType.KeyUp) { return 'KeyUp'; }
+    if (val == SDLEventType.MouseMove) { return 'MouseMove'; }
+    if (val == SDLEventType.MouseDown) { return 'MouseDown'; }
+    if (val == SDLEventType.MouseUp) { return 'MouseUp'; }
+    if (val == SDLEventType.MouseScroll) { return 'MouseScroll'; }
+    if (val == SDLEventType.FingerDown) { return 'FingerDown'; }
+    if (val == SDLEventType.FingerUp) { return 'FingerUp'; }
+    if (val == SDLEventType.FingerDrag) { return 'FingerDrag'; }
+    if (val == SDLEventType.WindowResize) { return 'WindowResize'; }
+    if (val == SDLEventType.NotImplemented) { return 'NotImplemented'; }
+    // to please the compiler - a human would use a switch statement
+    return '';
+}
+
 // ----- FFI: GENERATED FUNCTIONS -----
 
 
-typedef CreateEventNativeSig = Pointer<Void> Function();
+typedef _CreateEventNativeSig = Pointer<Void> Function();
 
 typedef CreateEventSig = Pointer<Void> Function();
 
 CreateEventSig lookupCreateEvent(DynamicLibrary lib) {
-    return lib.lookupFunction<CreateEventNativeSig, CreateEventSig>('CreateEvent');
+    return lib.lookupFunction<_CreateEventNativeSig, CreateEventSig>('CreateEvent');
 }
 
 
-typedef InitRenderWindowNativeSig = Pointer<Void> Function(Pointer<Utf8>, Int32, Int32, Int32, Int32, Int32);
+typedef _InitRenderWindowNativeSig = Pointer<Void> Function(Pointer<Utf8>, Int32, Int32, Int32, Int32, Int32);
 
 typedef InitRenderWindowSig = Pointer<Void> Function(Pointer<Utf8>, int, int, int, int, int);
 
 InitRenderWindowSig lookupInitRenderWindow(DynamicLibrary lib) {
-    return lib.lookupFunction<InitRenderWindowNativeSig, InitRenderWindowSig>('InitRenderWindow');
+    return lib.lookupFunction<_InitRenderWindowNativeSig, InitRenderWindowSig>('InitRenderWindow');
 }
 
 // ----- FFI: GENERATED CLASSES -----
 
 
-typedef _generatedClasscEventPollNativeSig = Void Function(Pointer<Void>);
+typedef __classcEventPollNativeSig = Void Function(Pointer<Void>);
 
-typedef _generatedClasscEventPollSig = void Function(Pointer<Void>);
-
-
-typedef _generatedClasscEventGetTypeNativeSig = Int32 Function(Pointer<Void>);
-
-typedef _generatedClasscEventGetTypeSig = int Function(Pointer<Void>);
+typedef _classcEventPollSig = void Function(Pointer<Void>);
 
 
-typedef _generatedClasscEventDestroyNativeSig = Void Function(Pointer<Void>);
+typedef __classcEventGetTypeNativeSig = Int32 Function(Pointer<Void>);
 
-typedef _generatedClasscEventDestroySig = void Function(Pointer<Void>);
-
-
-typedef _generatedClasscEventGetResizeDataNativeSig = Void Function(Pointer<Void>, Pointer<Int32>, Pointer<Int32>);
-
-typedef _generatedClasscEventGetResizeDataSig = void Function(Pointer<Void>, Pointer<Int32>, Pointer<Int32>);
+typedef _classcEventGetTypeSig = int Function(Pointer<Void>);
 
 
-typedef _generatedClasscEventGetMouseMoveDataNativeSig = Void Function(Pointer<Void>, Pointer<Int32>, Pointer<Int32>);
+typedef __classcEventDestroyNativeSig = Void Function(Pointer<Void>);
 
-typedef _generatedClasscEventGetMouseMoveDataSig = void Function(Pointer<Void>, Pointer<Int32>, Pointer<Int32>);
+typedef _classcEventDestroySig = void Function(Pointer<Void>);
 
 
-typedef _generatedClasscEventGetMousePressReleaseDataNativeSig = Int32 Function(Pointer<Void>, Pointer<Int32>, Pointer<Int32>);
+typedef __classcEventGetResizeDataNativeSig = Void Function(Pointer<Void>, Pointer<Int32>, Pointer<Int32>);
 
-typedef _generatedClasscEventGetMousePressReleaseDataSig = int Function(Pointer<Void>, Pointer<Int32>, Pointer<Int32>);
+typedef _classcEventGetResizeDataSig = void Function(Pointer<Void>, Pointer<Int32>, Pointer<Int32>);
+
+
+typedef __classcEventGetMouseMoveDataNativeSig = Void Function(Pointer<Void>, Pointer<Int32>, Pointer<Int32>);
+
+typedef _classcEventGetMouseMoveDataSig = void Function(Pointer<Void>, Pointer<Int32>, Pointer<Int32>);
+
+
+typedef __classcEventGetMousePressReleaseDataNativeSig = Int32 Function(Pointer<Void>, Pointer<Int32>, Pointer<Int32>);
+
+typedef _classcEventGetMousePressReleaseDataSig = int Function(Pointer<Void>, Pointer<Int32>, Pointer<Int32>);
 
 
 
@@ -132,22 +168,22 @@ class cEvent {
         }
     }
 
-    late _generatedClasscEventPollSig _Poll;
-    late _generatedClasscEventGetTypeSig _GetType;
-    late _generatedClasscEventDestroySig _Destroy;
-    late _generatedClasscEventGetResizeDataSig _GetResizeData;
-    late _generatedClasscEventGetMouseMoveDataSig _GetMouseMoveData;
-    late _generatedClasscEventGetMousePressReleaseDataSig _GetMousePressReleaseData;
+    late _classcEventPollSig _Poll;
+    late _classcEventGetTypeSig _GetType;
+    late _classcEventDestroySig _Destroy;
+    late _classcEventGetResizeDataSig _GetResizeData;
+    late _classcEventGetMouseMoveDataSig _GetMouseMoveData;
+    late _classcEventGetMousePressReleaseDataSig _GetMousePressReleaseData;
 
     cEvent() {
         final lib = getLibrary('Event.c');
 
-        _Poll = lib.lookupFunction<_generatedClasscEventPollNativeSig, _generatedClasscEventPollSig>('Poll');
-        _GetType = lib.lookupFunction<_generatedClasscEventGetTypeNativeSig, _generatedClasscEventGetTypeSig>('GetType');
-        _Destroy = lib.lookupFunction<_generatedClasscEventDestroyNativeSig, _generatedClasscEventDestroySig>('Destroy');
-        _GetResizeData = lib.lookupFunction<_generatedClasscEventGetResizeDataNativeSig, _generatedClasscEventGetResizeDataSig>('GetResizeData');
-        _GetMouseMoveData = lib.lookupFunction<_generatedClasscEventGetMouseMoveDataNativeSig, _generatedClasscEventGetMouseMoveDataSig>('GetMouseMoveData');
-        _GetMousePressReleaseData = lib.lookupFunction<_generatedClasscEventGetMousePressReleaseDataNativeSig, _generatedClasscEventGetMousePressReleaseDataSig>('GetMousePressReleaseData');
+        _Poll = lib.lookupFunction<__classcEventPollNativeSig, _classcEventPollSig>('Poll');
+        _GetType = lib.lookupFunction<__classcEventGetTypeNativeSig, _classcEventGetTypeSig>('GetType');
+        _Destroy = lib.lookupFunction<__classcEventDestroyNativeSig, _classcEventDestroySig>('Destroy');
+        _GetResizeData = lib.lookupFunction<__classcEventGetResizeDataNativeSig, _classcEventGetResizeDataSig>('GetResizeData');
+        _GetMouseMoveData = lib.lookupFunction<__classcEventGetMouseMoveDataNativeSig, _classcEventGetMouseMoveDataSig>('GetMouseMoveData');
+        _GetMousePressReleaseData = lib.lookupFunction<__classcEventGetMousePressReleaseDataNativeSig, _classcEventGetMousePressReleaseDataSig>('GetMousePressReleaseData');
     }
      void Poll() {
         validatePointer('Poll');
@@ -182,74 +218,74 @@ class cEvent {
 }
 
 
-typedef _generatedClasscRenderWindowLogSDLErrorNativeSig = Void Function(Pointer<Void>, Int32);
+typedef __classcRenderWindowLogSDLErrorNativeSig = Void Function(Pointer<Void>, Int32);
 
-typedef _generatedClasscRenderWindowLogSDLErrorSig = void Function(Pointer<Void>, int);
-
-
-typedef _generatedClasscRenderWindowDestroyNativeSig = Void Function(Pointer<Void>);
-
-typedef _generatedClasscRenderWindowDestroySig = void Function(Pointer<Void>);
+typedef _classcRenderWindowLogSDLErrorSig = void Function(Pointer<Void>, int);
 
 
-typedef _generatedClasscRenderWindowGetErrorCodeNativeSig = Int32 Function(Pointer<Void>);
+typedef __classcRenderWindowDestroyNativeSig = Void Function(Pointer<Void>);
 
-typedef _generatedClasscRenderWindowGetErrorCodeSig = int Function(Pointer<Void>);
-
-
-typedef _generatedClasscRenderWindowUpdateDimensionsNativeSig = Void Function(Pointer<Void>, Int32, Int32);
-
-typedef _generatedClasscRenderWindowUpdateDimensionsSig = void Function(Pointer<Void>, int, int);
+typedef _classcRenderWindowDestroySig = void Function(Pointer<Void>);
 
 
-typedef _generatedClasscRenderWindowGetWidthNativeSig = Int32 Function(Pointer<Void>);
+typedef __classcRenderWindowGetErrorCodeNativeSig = Int32 Function(Pointer<Void>);
 
-typedef _generatedClasscRenderWindowGetWidthSig = int Function(Pointer<Void>);
-
-
-typedef _generatedClasscRenderWindowGetHeightNativeSig = Int32 Function(Pointer<Void>);
-
-typedef _generatedClasscRenderWindowGetHeightSig = int Function(Pointer<Void>);
+typedef _classcRenderWindowGetErrorCodeSig = int Function(Pointer<Void>);
 
 
-typedef _generatedClasscRenderWindowSetColourNativeSig = Void Function(Pointer<Void>, Int32, Int32, Int32);
+typedef __classcRenderWindowUpdateDimensionsNativeSig = Void Function(Pointer<Void>, Int32, Int32);
 
-typedef _generatedClasscRenderWindowSetColourSig = void Function(Pointer<Void>, int, int, int);
-
-
-typedef _generatedClasscRenderWindowFlushNativeSig = Void Function(Pointer<Void>);
-
-typedef _generatedClasscRenderWindowFlushSig = void Function(Pointer<Void>);
+typedef _classcRenderWindowUpdateDimensionsSig = void Function(Pointer<Void>, int, int);
 
 
-typedef _generatedClasscRenderWindowGetFrameCountNativeSig = Int32 Function(Pointer<Void>);
+typedef __classcRenderWindowGetWidthNativeSig = Int32 Function(Pointer<Void>);
 
-typedef _generatedClasscRenderWindowGetFrameCountSig = int Function(Pointer<Void>);
-
-
-typedef _generatedClasscRenderWindowSetFullscreenNativeSig = Void Function(Pointer<Void>, Int32);
-
-typedef _generatedClasscRenderWindowSetFullscreenSig = void Function(Pointer<Void>, int);
+typedef _classcRenderWindowGetWidthSig = int Function(Pointer<Void>);
 
 
-typedef _generatedClasscRenderWindowDrawPointNativeSig = Void Function(Pointer<Void>, Int32, Int32);
+typedef __classcRenderWindowGetHeightNativeSig = Int32 Function(Pointer<Void>);
 
-typedef _generatedClasscRenderWindowDrawPointSig = void Function(Pointer<Void>, int, int);
-
-
-typedef _generatedClasscRenderWindowDrawLineNativeSig = Void Function(Pointer<Void>, Int32, Int32, Int32, Int32);
-
-typedef _generatedClasscRenderWindowDrawLineSig = void Function(Pointer<Void>, int, int, int, int);
+typedef _classcRenderWindowGetHeightSig = int Function(Pointer<Void>);
 
 
-typedef _generatedClasscRenderWindowDrawRectNativeSig = Void Function(Pointer<Void>, Int32, Int32, Int32, Int32);
+typedef __classcRenderWindowSetColourNativeSig = Void Function(Pointer<Void>, Int32, Int32, Int32);
 
-typedef _generatedClasscRenderWindowDrawRectSig = void Function(Pointer<Void>, int, int, int, int);
+typedef _classcRenderWindowSetColourSig = void Function(Pointer<Void>, int, int, int);
 
 
-typedef _generatedClasscRenderWindowFillRectNativeSig = Void Function(Pointer<Void>, Int32, Int32, Int32, Int32);
+typedef __classcRenderWindowFlushNativeSig = Void Function(Pointer<Void>);
 
-typedef _generatedClasscRenderWindowFillRectSig = void Function(Pointer<Void>, int, int, int, int);
+typedef _classcRenderWindowFlushSig = void Function(Pointer<Void>);
+
+
+typedef __classcRenderWindowGetFrameCountNativeSig = Int32 Function(Pointer<Void>);
+
+typedef _classcRenderWindowGetFrameCountSig = int Function(Pointer<Void>);
+
+
+typedef __classcRenderWindowSetFullscreenNativeSig = Void Function(Pointer<Void>, Int32);
+
+typedef _classcRenderWindowSetFullscreenSig = void Function(Pointer<Void>, int);
+
+
+typedef __classcRenderWindowDrawPointNativeSig = Void Function(Pointer<Void>, Int32, Int32);
+
+typedef _classcRenderWindowDrawPointSig = void Function(Pointer<Void>, int, int);
+
+
+typedef __classcRenderWindowDrawLineNativeSig = Void Function(Pointer<Void>, Int32, Int32, Int32, Int32);
+
+typedef _classcRenderWindowDrawLineSig = void Function(Pointer<Void>, int, int, int, int);
+
+
+typedef __classcRenderWindowDrawRectNativeSig = Void Function(Pointer<Void>, Int32, Int32, Int32, Int32);
+
+typedef _classcRenderWindowDrawRectSig = void Function(Pointer<Void>, int, int, int, int);
+
+
+typedef __classcRenderWindowFillRectNativeSig = Void Function(Pointer<Void>, Int32, Int32, Int32, Int32);
+
+typedef _classcRenderWindowFillRectSig = void Function(Pointer<Void>, int, int, int, int);
 
 
 
@@ -262,38 +298,38 @@ class cRenderWindow {
         }
     }
 
-    late _generatedClasscRenderWindowLogSDLErrorSig _LogSDLError;
-    late _generatedClasscRenderWindowDestroySig _Destroy;
-    late _generatedClasscRenderWindowGetErrorCodeSig _GetErrorCode;
-    late _generatedClasscRenderWindowUpdateDimensionsSig _UpdateDimensions;
-    late _generatedClasscRenderWindowGetWidthSig _GetWidth;
-    late _generatedClasscRenderWindowGetHeightSig _GetHeight;
-    late _generatedClasscRenderWindowSetColourSig _SetColour;
-    late _generatedClasscRenderWindowFlushSig _Flush;
-    late _generatedClasscRenderWindowGetFrameCountSig _GetFrameCount;
-    late _generatedClasscRenderWindowSetFullscreenSig _SetFullscreen;
-    late _generatedClasscRenderWindowDrawPointSig _DrawPoint;
-    late _generatedClasscRenderWindowDrawLineSig _DrawLine;
-    late _generatedClasscRenderWindowDrawRectSig _DrawRect;
-    late _generatedClasscRenderWindowFillRectSig _FillRect;
+    late _classcRenderWindowLogSDLErrorSig _LogSDLError;
+    late _classcRenderWindowDestroySig _Destroy;
+    late _classcRenderWindowGetErrorCodeSig _GetErrorCode;
+    late _classcRenderWindowUpdateDimensionsSig _UpdateDimensions;
+    late _classcRenderWindowGetWidthSig _GetWidth;
+    late _classcRenderWindowGetHeightSig _GetHeight;
+    late _classcRenderWindowSetColourSig _SetColour;
+    late _classcRenderWindowFlushSig _Flush;
+    late _classcRenderWindowGetFrameCountSig _GetFrameCount;
+    late _classcRenderWindowSetFullscreenSig _SetFullscreen;
+    late _classcRenderWindowDrawPointSig _DrawPoint;
+    late _classcRenderWindowDrawLineSig _DrawLine;
+    late _classcRenderWindowDrawRectSig _DrawRect;
+    late _classcRenderWindowFillRectSig _FillRect;
 
     cRenderWindow() {
         final lib = getLibrary('RenderWindow.c');
 
-        _LogSDLError = lib.lookupFunction<_generatedClasscRenderWindowLogSDLErrorNativeSig, _generatedClasscRenderWindowLogSDLErrorSig>('LogSDLError');
-        _Destroy = lib.lookupFunction<_generatedClasscRenderWindowDestroyNativeSig, _generatedClasscRenderWindowDestroySig>('Destroy');
-        _GetErrorCode = lib.lookupFunction<_generatedClasscRenderWindowGetErrorCodeNativeSig, _generatedClasscRenderWindowGetErrorCodeSig>('GetErrorCode');
-        _UpdateDimensions = lib.lookupFunction<_generatedClasscRenderWindowUpdateDimensionsNativeSig, _generatedClasscRenderWindowUpdateDimensionsSig>('UpdateDimensions');
-        _GetWidth = lib.lookupFunction<_generatedClasscRenderWindowGetWidthNativeSig, _generatedClasscRenderWindowGetWidthSig>('GetWidth');
-        _GetHeight = lib.lookupFunction<_generatedClasscRenderWindowGetHeightNativeSig, _generatedClasscRenderWindowGetHeightSig>('GetHeight');
-        _SetColour = lib.lookupFunction<_generatedClasscRenderWindowSetColourNativeSig, _generatedClasscRenderWindowSetColourSig>('SetColour');
-        _Flush = lib.lookupFunction<_generatedClasscRenderWindowFlushNativeSig, _generatedClasscRenderWindowFlushSig>('Flush');
-        _GetFrameCount = lib.lookupFunction<_generatedClasscRenderWindowGetFrameCountNativeSig, _generatedClasscRenderWindowGetFrameCountSig>('GetFrameCount');
-        _SetFullscreen = lib.lookupFunction<_generatedClasscRenderWindowSetFullscreenNativeSig, _generatedClasscRenderWindowSetFullscreenSig>('SetFullscreen');
-        _DrawPoint = lib.lookupFunction<_generatedClasscRenderWindowDrawPointNativeSig, _generatedClasscRenderWindowDrawPointSig>('DrawPoint');
-        _DrawLine = lib.lookupFunction<_generatedClasscRenderWindowDrawLineNativeSig, _generatedClasscRenderWindowDrawLineSig>('DrawLine');
-        _DrawRect = lib.lookupFunction<_generatedClasscRenderWindowDrawRectNativeSig, _generatedClasscRenderWindowDrawRectSig>('DrawRect');
-        _FillRect = lib.lookupFunction<_generatedClasscRenderWindowFillRectNativeSig, _generatedClasscRenderWindowFillRectSig>('FillRect');
+        _LogSDLError = lib.lookupFunction<__classcRenderWindowLogSDLErrorNativeSig, _classcRenderWindowLogSDLErrorSig>('LogSDLError');
+        _Destroy = lib.lookupFunction<__classcRenderWindowDestroyNativeSig, _classcRenderWindowDestroySig>('Destroy');
+        _GetErrorCode = lib.lookupFunction<__classcRenderWindowGetErrorCodeNativeSig, _classcRenderWindowGetErrorCodeSig>('GetErrorCode');
+        _UpdateDimensions = lib.lookupFunction<__classcRenderWindowUpdateDimensionsNativeSig, _classcRenderWindowUpdateDimensionsSig>('UpdateDimensions');
+        _GetWidth = lib.lookupFunction<__classcRenderWindowGetWidthNativeSig, _classcRenderWindowGetWidthSig>('GetWidth');
+        _GetHeight = lib.lookupFunction<__classcRenderWindowGetHeightNativeSig, _classcRenderWindowGetHeightSig>('GetHeight');
+        _SetColour = lib.lookupFunction<__classcRenderWindowSetColourNativeSig, _classcRenderWindowSetColourSig>('SetColour');
+        _Flush = lib.lookupFunction<__classcRenderWindowFlushNativeSig, _classcRenderWindowFlushSig>('Flush');
+        _GetFrameCount = lib.lookupFunction<__classcRenderWindowGetFrameCountNativeSig, _classcRenderWindowGetFrameCountSig>('GetFrameCount');
+        _SetFullscreen = lib.lookupFunction<__classcRenderWindowSetFullscreenNativeSig, _classcRenderWindowSetFullscreenSig>('SetFullscreen');
+        _DrawPoint = lib.lookupFunction<__classcRenderWindowDrawPointNativeSig, _classcRenderWindowDrawPointSig>('DrawPoint');
+        _DrawLine = lib.lookupFunction<__classcRenderWindowDrawLineNativeSig, _classcRenderWindowDrawLineSig>('DrawLine');
+        _DrawRect = lib.lookupFunction<__classcRenderWindowDrawRectNativeSig, _classcRenderWindowDrawRectSig>('DrawRect');
+        _FillRect = lib.lookupFunction<__classcRenderWindowFillRectNativeSig, _classcRenderWindowFillRectSig>('FillRect');
     }
      void LogSDLError(int exitCode) {
         validatePointer('LogSDLError');

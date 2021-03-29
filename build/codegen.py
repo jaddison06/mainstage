@@ -9,14 +9,20 @@ def get_file(name, ext):
 def generate_dart_enum(name):
     lines = get_file(name, 'enum')
     name = path.basename(name)
+
+    # enum definition
     out = "enum " + name + " {\n"
-    for val in lines:
+    for line in lines:
+        val = line.split('//')[0].strip()
         if not val.isspace():
             out += f"    {val},\n"
     out += "}\n\n"
+
+    # convert from int
     out += f"{name} {name}FromInt(int val) "
     out += "{\n"
-    for i, val in enumerate(lines):
+    for i, line in enumerate(lines):
+        val = line.split('//')[0].strip()
         if not val.isspace():
             out += f"    if (val == {i}) "
             out += "{"
@@ -24,6 +30,27 @@ def generate_dart_enum(name):
             out += "}\n"
     out += f"    throw Exception('{name} cannot be converted from int $val: Out of range.');\n"
     out += "}\n\n"
+    
+    # convert to string
+    out += f"String {name}ToString({name} val) "
+    out += "{\n"
+    for line in lines:
+        if "//" in line:
+            # custom string
+            val, repr = line.split('//')
+            out += f"    if (val == {name}.{val.strip()}) "
+            out += "{"
+            out += f" return '{repr.strip()}'; "
+            out += "}\n"
+        else:
+            val = line.strip()
+            out += f"    if (val == {name}.{val}) "
+            out += "{"
+            out += f" return '{val}'; "
+            out += "}\n"
+    out += "    // to please the compiler - a human would use a switch statement\n    return '';\n"
+    out += "}\n\n"
+
 
     return out
 
@@ -80,7 +107,7 @@ def get_dart_type(type):
 
 def generate_dart_funcsig_typedefs(name, return_type, params, prefix=""):
     out = ""
-    out += f"\ntypedef {prefix}{name}NativeSig = {get_native_type(return_type)} Function("
+    out += f"\ntypedef _{prefix}{name}NativeSig = {get_native_type(return_type)} Function("
     # if there aren't any params, we get [''] for some reason
     if params != ['']:
         # if there are multiple params of the same type, they'll all be equal to params[-1], so we have to enumerate.
@@ -114,7 +141,7 @@ def generate_dart_ffi_utils(defs_file_lines):
             
             out += f"\n{name}Sig lookup{name}(DynamicLibrary lib) "
             out += "{\n"
-            out += f"    return lib.lookupFunction<{name}NativeSig, {name}Sig>('{name}');\n"
+            out += f"    return lib.lookupFunction<_{name}NativeSig, {name}Sig>('{name}');\n"
             out += "}\n\n"
     
     return out
@@ -153,11 +180,8 @@ def generate_dart_class(cclass_file_path):
     class_name = "c" + path.basename(full_name)
     lines = get_file(full_name, ext)
     
-    c_fname = lines[0].strip()
-    param_name = lines[1].strip()
-
-    lines = lines[2:]
-
+    c_fname = class_name[1:] + ".c"
+    
     out = ""
 
     methods = {}
@@ -185,7 +209,7 @@ def generate_dart_class(cclass_file_path):
 
     for method_name, data in methods.items():
         param_types = ['void*'] + [param_type for param_type in data["params"].values()]
-        out += generate_dart_funcsig_typedefs(method_name, data["return_type"], param_types, f"_generatedClass{class_name}")
+        out += generate_dart_funcsig_typedefs(method_name, data["return_type"], param_types, f"_class{class_name}")
         out += "\n"
     
     # class boilerplate
@@ -201,7 +225,7 @@ def generate_dart_class(cclass_file_path):
 
     for method_name in methods:
         # todo (jaddison): does this need to be late?
-        out += f"    late _generatedClass{class_name}{method_name}Sig _{method_name};\n"
+        out += f"    late _class{class_name}{method_name}Sig _{method_name};\n"
     
     # constructor
     out += f"\n    {class_name}() "
@@ -209,7 +233,7 @@ def generate_dart_class(cclass_file_path):
     out += f"        final lib = getLibrary('{c_fname}');\n\n"
 
     for method_name in methods:
-        out += f"        _{method_name} = lib.lookupFunction<_generatedClass{class_name}{method_name}NativeSig, _generatedClass{class_name}{method_name}Sig>('{method_name}');\n"
+        out += f"        _{method_name} = lib.lookupFunction<__class{class_name}{method_name}NativeSig, _class{class_name}{method_name}Sig>('{method_name}');\n"
     
     out += "    }"
 

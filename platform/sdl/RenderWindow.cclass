@@ -1,5 +1,3 @@
-RenderWindow.c
-
 void LogSDLError(int exitCode)
 void Destroy()
 int GetErrorCode()
