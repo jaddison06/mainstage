@@ -6,6 +6,21 @@ const LIB_DIR = 'build/libs';
 
 // ----- ENUMS -----
 
+enum MouseButton {
+    Left,
+    Middle,
+    Right,
+    Unknown,
+}
+
+MouseButton MouseButtonFromInt(int val) {
+    if (val == 0) { return MouseButton.Left; }
+    if (val == 1) { return MouseButton.Middle; }
+    if (val == 2) { return MouseButton.Right; }
+    if (val == 3) { return MouseButton.Unknown; }
+    throw Exception('MouseButton cannot be converted from int $val: Out of range.');
+}
+
 enum PlatformErrorCode {
     Success,
     SDL_InitVideo_Fail,
@@ -97,6 +112,16 @@ typedef _generatedClasscEventGetResizeDataNativeSig = Void Function(Pointer<Void
 typedef _generatedClasscEventGetResizeDataSig = void Function(Pointer<Void>, Pointer<Int32>, Pointer<Int32>);
 
 
+typedef _generatedClasscEventGetMouseMoveDataNativeSig = Void Function(Pointer<Void>, Pointer<Int32>, Pointer<Int32>);
+
+typedef _generatedClasscEventGetMouseMoveDataSig = void Function(Pointer<Void>, Pointer<Int32>, Pointer<Int32>);
+
+
+typedef _generatedClasscEventGetMousePressReleaseDataNativeSig = Int32 Function(Pointer<Void>, Pointer<Int32>, Pointer<Int32>);
+
+typedef _generatedClasscEventGetMousePressReleaseDataSig = int Function(Pointer<Void>, Pointer<Int32>, Pointer<Int32>);
+
+
 
 class cEvent {
     Pointer<Void> structPointer = Pointer.fromAddress(0);
@@ -111,6 +136,8 @@ class cEvent {
     late _generatedClasscEventGetTypeSig _GetType;
     late _generatedClasscEventDestroySig _Destroy;
     late _generatedClasscEventGetResizeDataSig _GetResizeData;
+    late _generatedClasscEventGetMouseMoveDataSig _GetMouseMoveData;
+    late _generatedClasscEventGetMousePressReleaseDataSig _GetMousePressReleaseData;
 
     cEvent() {
         final lib = getLibrary('Event.c');
@@ -119,6 +146,8 @@ class cEvent {
         _GetType = lib.lookupFunction<_generatedClasscEventGetTypeNativeSig, _generatedClasscEventGetTypeSig>('GetType');
         _Destroy = lib.lookupFunction<_generatedClasscEventDestroyNativeSig, _generatedClasscEventDestroySig>('Destroy');
         _GetResizeData = lib.lookupFunction<_generatedClasscEventGetResizeDataNativeSig, _generatedClasscEventGetResizeDataSig>('GetResizeData');
+        _GetMouseMoveData = lib.lookupFunction<_generatedClasscEventGetMouseMoveDataNativeSig, _generatedClasscEventGetMouseMoveDataSig>('GetMouseMoveData');
+        _GetMousePressReleaseData = lib.lookupFunction<_generatedClasscEventGetMousePressReleaseDataNativeSig, _generatedClasscEventGetMousePressReleaseDataSig>('GetMousePressReleaseData');
     }
      void Poll() {
         validatePointer('Poll');
@@ -138,6 +167,16 @@ class cEvent {
      void GetResizeData(Pointer<Int32> newWidth, Pointer<Int32> newHeight) {
         validatePointer('GetResizeData');
         return _GetResizeData(structPointer, newWidth, newHeight);
+    }
+
+     void GetMouseMoveData(Pointer<Int32> x, Pointer<Int32> y) {
+        validatePointer('GetMouseMoveData');
+        return _GetMouseMoveData(structPointer, x, y);
+    }
+
+     int GetMousePressReleaseData(Pointer<Int32> x, Pointer<Int32> y) {
+        validatePointer('GetMousePressReleaseData');
+        return _GetMousePressReleaseData(structPointer, x, y);
     }
 
 }

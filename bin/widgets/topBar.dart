@@ -1,5 +1,5 @@
 import 'widget.dart';
-import '../dart_codegen.dart';
+import '../renderWindow.dart';
 import '../colour.dart';
 
 class TopBar extends Widget {
@@ -8,7 +8,7 @@ class TopBar extends Widget {
   TopBar({required this.fillColour});
   
   @override
-  void DrawLinux(cRenderWindow win) {
+  void DrawLinux(RenderWindow win) {
     setWinColour(win, fillColour);
     win.FillRect(0, 0, win.GetWidth(), 56);
   }

@@ -3,6 +3,13 @@
 
 // ----- ENUMS -----
 
+enum MouseButton {
+    Left = 0,
+    Middle = 1,
+    Right = 2,
+    Unknown = 3,
+};
+
 enum PlatformErrorCode {
     Success = 0,
     SDL_InitVideo_Fail = 1,

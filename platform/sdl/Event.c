@@ -40,3 +40,20 @@ void GetResizeData(SDL_Event *event, int *newWidth, int *newHeight) {
     *newWidth = event->window.data1;
     *newHeight = event->window.data2;
 }
+
+void GetMouseMoveData(SDL_Event *event, int *x, int *y) {
+    *x = event->motion.x;
+    *y = event->motion.y;
+}
+
+int GetMousePressReleaseData(SDL_Event *event, int *x, int *y) {
+    *x = event->button.x;
+    *y = event->button.y;
+    switch (event->button.button) {
+        case SDL_BUTTON_LEFT: return Left;
+        case SDL_BUTTON_MIDDLE: return Middle;
+        case SDL_BUTTON_RIGHT: return Right;
+
+        default: return Unknown;
+    }
+}

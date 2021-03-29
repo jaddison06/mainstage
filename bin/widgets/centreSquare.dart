@@ -1,32 +1,24 @@
 import 'widget.dart';
-import '../dart_codegen.dart';
+import '../renderWindow.dart';
 import '../colour.dart';
+import 'square.dart';
 
 class CentreSquare extends Widget {
-  final Colour fillColour;
+  late Square _square;
   final int size;
 
-  CentreSquare({required this.fillColour, required this.size});
-
-  @override
-  void DrawLinux(cRenderWindow win) {
-    setWinColour(win, fillColour);
-    win.FillRect(
-      (win.GetWidth() ~/ 2) - (size ~/ 2),
-      (win.GetHeight() ~/ 2) - (size ~/ 2),
-      size,
-      size
+  CentreSquare({required Colour fillColour, required this.size}) {
+    _square = Square(
+      fillColour: fillColour,
+      size: size,
+      x: 0, y: 0 // change dynamically later
     );
   }
 
-  // same on all platforms
   @override
-  void DrawMacOS(cRenderWindow win) {
-    DrawLinux(win);
-  }
-  
-  @override
-  void DrawWindows(cRenderWindow win) {
-    DrawLinux(win);
+  void DrawDesktop(RenderWindow win) {
+    _square.x = (win.GetWidth() ~/ 2) - (size ~/ 2);
+    _square.y = (win.GetHeight() ~/ 2) - (size ~/ 2);
+    _square.DrawDesktop(win);
   }
 }

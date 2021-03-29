@@ -58,20 +58,16 @@ def main():
             command += f" -l{lib}"
         makefile += generate_makefile_item(libname, [f], [command])
     
-    # todo (jaddison): Make codegen a logical dependency (based on files, dynamic though) so we don't rebuild all the libs every time
-    # could do this by generating the makefile each time round? wouldn't load though... Possibly "make all" builds makefile and then
-    # calls a separate target which calls "make build" or something? (ie a target that executes code w/o generating makefile)
-    #
-    # Probably over-complicating that though, we'll see
-
     # operations
-    makefile += generate_makefile_item("run", ["all", "codegen"], ["dart run"])
+    makefile += generate_makefile_item("run", ["all"], ["dart run"])
     makefile += generate_makefile_item("clean", [], [F"rm -rf {LIB_DIR}", F"mkdir {LIB_DIR}"])
     makefile += generate_makefile_item("makefile", [], ["python3 ./build/generate_makefile.py"])
     makefile += generate_makefile_item("codegen", [], ["python3 ./build/codegen.py"])
     
     # "all" as first target
-    makefile = generate_makefile_item("all", libnames, []) + makefile
+    all_targets = libnames.copy()
+    all_targets.append("codegen")
+    makefile = generate_makefile_item("all", all_targets, []) + makefile
     
     with open("Makefile", "wt") as fh: fh.write(makefile)
 

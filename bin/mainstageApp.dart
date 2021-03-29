@@ -1,27 +1,32 @@
-import './widgets/widget.dart';
+import 'widgets/widget.dart';
 import 'renderWindow.dart';
 import 'dart_codegen.dart';
 import 'colour.dart';
 import 'getLibrary.dart';
 import 'dart:ffi';
 import 'package:ffi/ffi.dart';
+import 'platformRenderer.dart';
 
 class MainstageApp {
-  List<Widget> _widgets = [];
-  late cRenderWindow _win;
+  final List<Widget> _widgets = [];
+  late RenderWindow _win;
   late CreateEventSig _initEvent;
   
-  late Pointer<Int32> _resizePtrWidth;
-  late Pointer<Int32> _resizePtrHeight;
+
+  late Pointer<Int32> _eventPtrX;
+  late Pointer<Int32> _eventPtrY;
 
   MainstageApp({required String title, required Colour backgroundCol}) {
     final libEvent = getLibrary('Event.c');
     _initEvent = lookupCreateEvent(libEvent);
 
-    _win = initRenderWindow(title, 500, 500, backgroundCol);
-
-    _resizePtrWidth = malloc<Int32>();
-    _resizePtrHeight = malloc<Int32>();
+    _win = RenderWindow(title, 500, 500, backgroundCol);
+    
+    // event methods that need to return x & y do so by modifying pointers.
+    // we alloc these once & use them wherever we need to get an x, y pair.
+    // they are NOT guaranteed to keep their values between function calls.
+    _eventPtrX = malloc<Int32>();
+    _eventPtrY = malloc<Int32>();
   }
 
   void runApp() {
@@ -31,13 +36,53 @@ class MainstageApp {
     var eType = SDLEventType.NotImplemented; // call it null
 
     while (eType != SDLEventType.Quit) {
+      
+      // first event processing, then widget drawing.
+      // the recommended event handling method is to parse the event data &
+      // store it internally. This way of doing things means that you don't have to
+      // wait a frame for the result of your event to be drawn. The downside is that
+      // if you do any drawing during the event callback, it's likely to get overwritten
+      // by the widget draw.
+      
+      switch (eType) {
+        case SDLEventType.WindowResize: {
+          event.GetResizeData(_eventPtrX, _eventPtrY);
+          _win.UpdateDimensions(_eventPtrX.value, _eventPtrY.value);
+
+          break;
+        }
+        case SDLEventType.MouseMove: {
+          event.GetMouseMoveData(_eventPtrX, _eventPtrY);
+          final x = _eventPtrX.value;
+          final y = _eventPtrY.value;
+          for (var widget in _widgets) {
+            widget.OnMouseMove(x, y);
+          }
+
+          break;
+        }
+        case SDLEventType.MouseDown:
+        case SDLEventType.MouseUp: {
+          final button = MouseButtonFromInt(event.GetMousePressReleaseData(_eventPtrX, _eventPtrY));
+          final x = _eventPtrX.value;
+          final y = _eventPtrY.value;
+          
+          for (var widget in _widgets) {
+            if (eType == SDLEventType.MouseDown) {
+              widget.OnMouseDown(x, y, button);
+            } else {
+              widget.OnMouseUp(x, y, button);
+            }
+          }
+
+          break;
+        }
+        
+        default: {}
+      }
+      
       for (var w in _widgets) {
         w.Draw();
-      }
-
-      if (eType == SDLEventType.WindowResize) {
-        event.GetResizeData(_resizePtrWidth, _resizePtrHeight);
-        _win.UpdateDimensions(_resizePtrWidth.value, _resizePtrHeight.value);
       }
       
       _win.Flush();
@@ -47,17 +92,17 @@ class MainstageApp {
 
     event.Destroy();
   }
-
+  
   void addWidget(Widget widget) {
     _widgets.add(widget);
-    widget.desktopRenderWindow = _win;
+    widget.renderer = PlatformRenderer(desktop: _win);
   }
   
   void destroy() {
     _win.Destroy();
 
-    malloc.free(_resizePtrWidth);
-    malloc.free(_resizePtrHeight);
+    malloc.free(_eventPtrX);
+    malloc.free(_eventPtrY);
   }
 
 }
