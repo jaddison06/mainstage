@@ -5,8 +5,18 @@ import 'point.dart';
 import 'colour.dart';
 import 'dart:math';
 
+import './curves/bezierCurve.dart';
+import './curves/linearBezier.dart';
+import './curves/quadraticBezier.dart';
+
+// this actually just draws straight lines. underwhelming, I know
 class SplineDrawer extends Widget {
-  final int size = 10;
+  final int _size = 10;
+  final bool _drawIntermediateLines = false;
+
+  BezierCurve? _curve;
+  
+  int _resolution = 0;
 
   List<Point> _points = [];
   Point? _temporaryPoint;
@@ -15,8 +25,6 @@ class SplineDrawer extends Widget {
   final Colour col;
   
   bool _mouseIsDown = false;
-  
-  bool _showTemporary = true;
   
   SplineDrawer({required this.col});
   
@@ -28,10 +36,10 @@ class SplineDrawer extends Widget {
       for (var i=0; i<_points.length; i++) {
         final point = _points[i];
         if (
-          x >= (point.getAbsoluteX(width) - (size ~/ 2)) &&
-          y >= (point.getAbsoluteY(height) - (size ~/ 2)) &&
-          x <= (point.getAbsoluteX(width) + (size ~/ 2)) &&
-          (y <= (point.getAbsoluteY(height) + (size ~/ 2)))
+          x >= (point.getAbsoluteX(width) - (_size ~/ 2)) &&
+          y >= (point.getAbsoluteY(height) - (_size ~/ 2)) &&
+          x <= (point.getAbsoluteX(width) + (_size ~/ 2)) &&
+          (y <= (point.getAbsoluteY(height) + (_size ~/ 2)))
         ) {
           _pointIndexBeingModified = i;
           _temporaryPoint = null;
@@ -39,22 +47,13 @@ class SplineDrawer extends Widget {
         }
       }
       
-      if (!_showTemporary) {
-        _showTemporary = true;
-        if (_points.isEmpty && _temporaryPoint != null) {
-          _points.add(_temporaryPoint!);
-        }
-      } else if (_temporaryPoint != null) {
-        if (button == MouseButton.Right) {
-          _showTemporary = false;
-        } else {
-          _points.add(_temporaryPoint!);
-        }
+      if (_points.length < 3 && _temporaryPoint != null) {
+        _points.add(_temporaryPoint!);
       }
     }
     _mouseIsDown = true;
   }
-
+  
   @override
   void OnMouseUp(int x, int y, MouseButton button) {
     if (_pointIndexBeingModified != null) {
@@ -72,12 +71,17 @@ class SplineDrawer extends Widget {
       _temporaryPoint = newPoint;
     }
   }
-
+  
+  // esc/backspace logic feels weird. dk what to do. after this, follow tutorial for cubic bezier. generalize for all polynomials:
+  // -> either a phat interpolation/reduce kinda thing
+  // -> or split into cubics n shit then render them
+  //
+  // fix weird thing w Widget.renderer being late (line 115)
   @override
   void OnKeyDown(KeyCode key) {
     if (key == KeyCode.Backspace || key == KeyCode.Escape) {
-      if (_showTemporary) {
-        _showTemporary = false;
+      if (_pointIndexBeingModified != null) {
+        _temporaryPoint = null;
       } else if (_points.isNotEmpty) {
         _points.removeLast();
       }
@@ -86,23 +90,36 @@ class SplineDrawer extends Widget {
 
   @override
   void DrawDesktop(RenderWindow win) {
-    // copy-pasted from MousePainter
-    // todo (jaddison): mixin?
     setWinColour(win, col);
     final width = win.GetWidth();
     final height = win.GetHeight();
-    for (var point in _points) {
-      win.FillRect(point.getAbsoluteX(width) - (size ~/ 2), point.getAbsoluteY(height) - (size ~/ 2), size, size);
+    
+    if (_temporaryPoint != null) {
+      _points.add(_temporaryPoint!);
     }
+
+    for (var point in _points) {
+      win.FillRect(point.getAbsoluteX(width) - (_size ~/ 2), point.getAbsoluteY(height) - (_size ~/ 2), _size, _size);
+    }
+    /*
     for (var i=0; i<_points.length-1; i++) {
       win.DrawLine(_points[i].getAbsoluteX(width), _points[i].getAbsoluteY(height), _points[i+1].getAbsoluteX(width), _points[i+1].getAbsoluteY(height));
     }
-    if (_temporaryPoint != null && _showTemporary) {
-      // temp point is dynamic anyway - unless the OS resizes the window without the mouse moving, this will be fine
-      win.FillRect(_temporaryPoint!.x - (size ~/ 2), _temporaryPoint!.y - (size ~/ 2), size, size);
-      if (_points.isNotEmpty) {
-        win.DrawLine(_points.last.getAbsoluteX(width), _points.last.getAbsoluteY(height), _temporaryPoint!.x, _temporaryPoint!.y);
-      }
+    */
+    if (_points.length == 2) {
+      _curve = LinearBezier(_points[0], _points[1]);
+    } else if (_points.length == 3) {
+      _curve = QuadraticBezier(_points[0], _points[1], _points[2], resolutionCoeff: 2);
     }
+
+    _curve?.renderer = renderer;
+    
+    _curve?.col = col;
+    _curve?.DrawDesktop(win);
+  
+    if (_temporaryPoint != null) {
+      _points.removeLast();
+    }
+    
   }
 }
