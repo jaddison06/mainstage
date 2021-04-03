@@ -12,8 +12,8 @@ class MainstageApp {
   late RenderWindow _win;
   late CreateEventSig _initEvent;
   
-  Map<KeyCode, bool> _pressedKeys = {};
-  Map<MouseButton, bool> _pressedMouseButtons = {};
+  final Map<KeyCode, bool> _pressedKeys = {};
+  final Map<MouseButton, bool> _pressedMouseButtons = {};
   
   late Pointer<Int32> _eventPtrX;
   late Pointer<Int32> _eventPtrY;

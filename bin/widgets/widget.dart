@@ -63,7 +63,14 @@ class Widget {
   
   // utility functions
   
+  // set from a Colour
   void setWinColour(RenderWindow win, Colour col, [int alpha = 255]) {
     win.SetColour(col.r, col.g, col.b, alpha);
+  }
+  
+  // if we're drawing child widgets, init them with the necessary stuff
+  // todo (jaddison): does this need to be called once, or repeatedly?
+  void initChild(Widget child) {
+    child.renderer = renderer;
   }
 }

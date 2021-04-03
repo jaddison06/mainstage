@@ -6,7 +6,7 @@ import 'point.dart';
 
 class MousePainter extends Widget {
   final Colour col;
-  List<Point> _points = [];
+  final List<Point> _points = [];
   bool _collectPoints = false;
 
   MousePainter({required this.col});

@@ -1,7 +1,6 @@
 import 'bezierCurve.dart';
 import '../../renderWindow.dart';
 import '../point.dart';
-import '../colour.dart';
 
 class LinearBezier extends BezierCurve {
   final Point p1;
