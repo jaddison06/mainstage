@@ -5,27 +5,24 @@ import 'point.dart';
 import 'colour.dart';
 import 'dart:math';
 
+import 'dart:io';
+
 import './curves/bezierCurve.dart';
-import './curves/linearBezier.dart';
-import './curves/quadraticBezier.dart';
-import './curves/cubicBezier.dart';
+import 'curves/dynamicBezier.dart';
+
 class SplineDrawer extends Widget {
   final int _size = 10;
   final bool _drawIntermediateLines = false;
-  
-  BezierCurve? _curve;
   
   int _resolution = 0;
   
   List<Point> _points = [];
   Point? _temporaryPoint;
   int? _pointIndexBeingModified;
-
+  
   bool _start = true;
   
   final Colour col;
-
-  final _max_points = 4;
   
   SplineDrawer({required this.col});
 
@@ -47,11 +44,13 @@ class SplineDrawer extends Widget {
       }
     }
     
-    if (_temporaryPoint == null && _points.length != _max_points) {
+    if (_temporaryPoint == null) {
       _temporaryPoint = Point(x, y, renderer.GetWidth(), renderer.GetHeight());
-    } else if (_points.length < _max_points) {
+    } else {
       _points.add(_temporaryPoint!);
     }
+    
+    print(_points);
   }
   
   @override
@@ -66,7 +65,7 @@ class SplineDrawer extends Widget {
     final newPoint = Point(x, y, renderer.GetWidth(), renderer.GetHeight());
     if (_pointIndexBeingModified != null) {
       _points[_pointIndexBeingModified!] = newPoint;
-    } else if ((_points.length < _max_points && _temporaryPoint != null) || _start) {
+    } else if (_temporaryPoint != null || _start) {
       _temporaryPoint = newPoint;
       _start = false;
     } else {
@@ -74,10 +73,6 @@ class SplineDrawer extends Widget {
     }
   }
   
-  // esc/backspace logic feels weird. dk what to do. after this, follow tutorial for cubic bezier. generalize for all polynomials:
-  // -> either a phat interpolation/reduce kinda thing
-  // -> or split into cubics n shit then render them
-  //
   // fix weird thing w Widget.renderer being late (line 115)
   @override
   void OnKeyDown(KeyCode key) {
@@ -86,6 +81,8 @@ class SplineDrawer extends Widget {
         _temporaryPoint = null;
       } else if (_points.isNotEmpty) {
         _points.removeLast();
+      } else {
+        _start = true;
       }
     }
   }
@@ -103,25 +100,23 @@ class SplineDrawer extends Widget {
     for (var point in _points) {
       win.FillRect(point.getAbsoluteX(width) - (_size ~/ 2), point.getAbsoluteY(height) - (_size ~/ 2), _size, _size);
     }
+    
     /*
     for (var i=0; i<_points.length-1; i++) {
       win.DrawLine(_points[i].getAbsoluteX(width), _points[i].getAbsoluteY(height), _points[i+1].getAbsoluteX(width), _points[i+1].getAbsoluteY(height));
     }
     */
-    if (_points.length < 2) {
-      _curve = null;
-    } else if (_points.length == 2) {
-      _curve = LinearBezier(_points[0], _points[1]);
-    } else if (_points.length == 3) {
-      _curve = QuadraticBezier(_points[0], _points[1], _points[2], resolutionCoeff: 2);
-    } else if (_points.length == 4) {
-      _curve = CubicBezier(_points[0], _points[1], _points[2], _points[3], 300);
-    }
-
-    _curve?.renderer = renderer;
+    BezierCurve? curve;
     
-    _curve?.col = col;
-    _curve?.DrawDesktop(win);
+    if (_points.isNotEmpty) {
+      curve = DynamicBezier(_points.toList(), 100);
+      curve.showConstructionLines = _drawIntermediateLines;
+    }
+    
+    curve?.renderer = renderer;
+    
+    curve?.col = col;
+    curve?.DrawDesktop(win);
   
     if (_temporaryPoint != null) {
       _points.removeLast();

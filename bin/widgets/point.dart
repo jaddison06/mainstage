@@ -14,5 +14,10 @@ class Point {
     return (y * scale).toInt();
   }
   
+  @override
+  String toString() {
+    return 'Point at ($x, $y)';
+  }
+  
   Point(this.x, this.y, this.winX, this.winY);
 }

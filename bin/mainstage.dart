@@ -8,7 +8,7 @@ import 'widgets/text.dart';
 
 void main() {
   final app = MainstageApp(
-    title: 'Mainstage',
+    title: 'Test',
     backgroundCol: Colour(0, 0, 255),
     fontFile: 'res/Menlo-Regular.ttf',
     fontSize: 25

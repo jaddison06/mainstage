@@ -13,13 +13,19 @@ class DynamicBezier extends BezierCurve {
 
   @override
   void DrawDesktop(RenderWindow win) {
-    var intermediates = points;
     for (var i=0; i<resolution; i++) {
+      var intermediates = points.toList();
+      //print('Rendering point at interpolation position $i');
       while (intermediates.length > 1) {
+        //print('intermediates: $intermediates');
         for (var j=0; j<intermediates.length - 1; j++) {
           final this_point = intermediates[j];
           final next_point = intermediates[j+1];
+          //print('this_point: $this_point\nnext_point: $next_point');
+          
+          // this looks hella weird but I'm pretty sure it's actually working as intended. idk though
           if (showConstructionLines) {
+            //setWinColour(win, Colour.black);
             win.DrawLine(this_point.x, this_point.y, next_point.x, next_point.y);
           }
 
@@ -27,8 +33,8 @@ class DynamicBezier extends BezierCurve {
         }
         intermediates.removeLast();
       }
+      setColour(win);
+      win.DrawPoint(intermediates.first.x, intermediates.first.y);
     }
-    setColour(win);
-    win.DrawPoint(intermediates.first.x, intermediates.first.y);
   }
 }

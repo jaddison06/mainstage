@@ -19,9 +19,9 @@ class QuadraticBezier extends BezierCurve {
         final intermediate_2 = interpolate(p2, p3, i);
         final result = interpolate(intermediate_1, intermediate_2, i);
         if (showConstructionLines) {
-          setWinColour(win, Colour.red());
+          setWinColour(win, Colour.red);
           win.DrawPoint(intermediate_1.x, intermediate_1.y);
-          setWinColour(win, Colour.green());
+          setWinColour(win, Colour.green);
           win.DrawPoint(intermediate_2.x, intermediate_2.y);
         }
         setColour(win);

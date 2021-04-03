@@ -37,6 +37,6 @@ abstract class BezierCurve extends Widget {
   
   @protected
   void setColour(RenderWindow win) {
-    setWinColour(win, col ?? Colour.black());
+    setWinColour(win, col ?? Colour.black);
   }
 }

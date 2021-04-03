@@ -27,7 +27,7 @@ class CubicBezier extends BezierCurve {
       final result = interpolate(intermediate_2_1, intermediate_2_2, i);
 
       if (showConstructionLines) {
-        setWinColour(win, Colour.black());
+        setWinColour(win, Colour.black);
         win.DrawPoint(intermediate_1_1.x, intermediate_1_1.y);
         win.DrawPoint(intermediate_1_2.x, intermediate_1_2.y);
         win.DrawPoint(intermediate_1_3.x, intermediate_1_3.y);
