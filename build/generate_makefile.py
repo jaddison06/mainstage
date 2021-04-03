@@ -9,6 +9,11 @@ def get_platform_lib_extension():
     elif platform.system() == 'Windows': return 'dll'
     else: raise Exception('Unknown platform')
 
+def get_platform_exe_extension():
+    if platform.system() == 'Linux': return ''
+    elif platform.system() == 'Darwin': return '.app'
+    elif platform.system() == 'Windows': return '.exe'
+
 def generate_makefile_item(target, dependencies, commands):
     out = f"{target}:"
     for dependency in dependencies: out += f" {dependency}"
@@ -60,13 +65,14 @@ def main():
     
     # operations
     makefile += generate_makefile_item("run", ["all"], ["dart run"])
+    #makefile += generate_makefile_item("exe", ["all"], [f"dart compile exe ./bin/mainstage.dart -o ./mainstage{get_platform_exe_extension()}"])
     makefile += generate_makefile_item("clean", [], [f"rm -rf {LIB_DIR}", f"mkdir {LIB_DIR}", f"rm {DART_CODEGEN_FNAME}", f"rm {C_CODEGEN_FNAME}"])
     makefile += generate_makefile_item("makefile", [], ["python3 ./build/generate_makefile.py"])
     makefile += generate_makefile_item("codegen", [], ["python3 ./build/codegen.py"])
     
-    # "all" as first target
     all_targets = libnames.copy()
     all_targets.insert(0, "codegen")
+    # "all" as first target
     makefile = generate_makefile_item("all", all_targets, []) + makefile
     
     with open("Makefile", "wt") as fh: fh.write(makefile)

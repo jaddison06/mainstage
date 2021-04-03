@@ -10,7 +10,7 @@ abstract class BezierCurve extends Widget {
   Colour? col;
   // you MUST initialize this during Draw...()
   late int resolution;
-
+  
   // Pythagoras
   int getDistance(Point p1, Point p2) {
     final x_diff = (p1.x - p2.x).abs();

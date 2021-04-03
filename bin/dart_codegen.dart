@@ -570,19 +570,20 @@ class cEvent {
         _GetMousePressReleaseData = lib.lookupFunction<__classcEventGetMousePressReleaseDataNativeSig, _classcEventGetMousePressReleaseDataSig>('GetMousePressReleaseData');
         _GetKeyPressReleaseData = lib.lookupFunction<__classcEventGetKeyPressReleaseDataNativeSig, _classcEventGetKeyPressReleaseDataSig>('GetKeyPressReleaseData');
     }
+
      void Poll() {
         validatePointer('Poll');
-        return _Poll(structPointer, );
+        return _Poll(structPointer);
     }
 
      int GetType() {
         validatePointer('GetType');
-        return _GetType(structPointer, );
+        return _GetType(structPointer);
     }
 
      void Destroy() {
         validatePointer('Destroy');
-        return _Destroy(structPointer, );
+        return _Destroy(structPointer);
     }
 
      void GetResizeData(Pointer<Int32> newWidth, Pointer<Int32> newHeight) {
@@ -602,15 +603,10 @@ class cEvent {
 
      int GetKeyPressReleaseData() {
         validatePointer('GetKeyPressReleaseData');
-        return _GetKeyPressReleaseData(structPointer, );
+        return _GetKeyPressReleaseData(structPointer);
     }
 
 }
-
-
-typedef __classcRenderWindowLogSDLErrorNativeSig = Void Function(Pointer<Void>, Int32);
-
-typedef _classcRenderWindowLogSDLErrorSig = void Function(Pointer<Void>, int);
 
 
 typedef __classcRenderWindowDestroyNativeSig = Void Function(Pointer<Void>);
@@ -693,7 +689,6 @@ class cRenderWindow {
         }
     }
 
-    late _classcRenderWindowLogSDLErrorSig _LogSDLError;
     late _classcRenderWindowDestroySig _Destroy;
     late _classcRenderWindowGetRendererSig _GetRenderer;
     late _classcRenderWindowGetErrorCodeSig _GetErrorCode;
@@ -712,7 +707,6 @@ class cRenderWindow {
     cRenderWindow() {
         final lib = getLibrary('RenderWindow.c');
 
-        _LogSDLError = lib.lookupFunction<__classcRenderWindowLogSDLErrorNativeSig, _classcRenderWindowLogSDLErrorSig>('LogSDLError');
         _Destroy = lib.lookupFunction<__classcRenderWindowDestroyNativeSig, _classcRenderWindowDestroySig>('Destroy');
         _GetRenderer = lib.lookupFunction<__classcRenderWindowGetRendererNativeSig, _classcRenderWindowGetRendererSig>('GetRenderer');
         _GetErrorCode = lib.lookupFunction<__classcRenderWindowGetErrorCodeNativeSig, _classcRenderWindowGetErrorCodeSig>('GetErrorCode');
@@ -728,24 +722,20 @@ class cRenderWindow {
         _DrawRect = lib.lookupFunction<__classcRenderWindowDrawRectNativeSig, _classcRenderWindowDrawRectSig>('DrawRect');
         _FillRect = lib.lookupFunction<__classcRenderWindowFillRectNativeSig, _classcRenderWindowFillRectSig>('FillRect');
     }
-     void LogSDLError(int exitCode) {
-        validatePointer('LogSDLError');
-        return _LogSDLError(structPointer, exitCode);
-    }
 
      void Destroy() {
         validatePointer('Destroy');
-        return _Destroy(structPointer, );
+        return _Destroy(structPointer);
     }
 
      Pointer<Void> GetRenderer() {
         validatePointer('GetRenderer');
-        return _GetRenderer(structPointer, );
+        return _GetRenderer(structPointer);
     }
 
      int GetErrorCode() {
         validatePointer('GetErrorCode');
-        return _GetErrorCode(structPointer, );
+        return _GetErrorCode(structPointer);
     }
 
      void UpdateDimensions(int width, int height) {
@@ -755,12 +745,12 @@ class cRenderWindow {
 
      int GetWidth() {
         validatePointer('GetWidth');
-        return _GetWidth(structPointer, );
+        return _GetWidth(structPointer);
     }
 
      int GetHeight() {
         validatePointer('GetHeight');
-        return _GetHeight(structPointer, );
+        return _GetHeight(structPointer);
     }
 
      void SetColour(int r, int g, int b, int alpha) {
@@ -770,12 +760,12 @@ class cRenderWindow {
 
      void Flush() {
         validatePointer('Flush');
-        return _Flush(structPointer, );
+        return _Flush(structPointer);
     }
 
      int GetFrameCount() {
         validatePointer('GetFrameCount');
-        return _GetFrameCount(structPointer, );
+        return _GetFrameCount(structPointer);
     }
 
      void SetFullscreen(int enable) {

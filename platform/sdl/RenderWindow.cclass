@@ -1,4 +1,3 @@
-void LogSDLError(int exitCode)
 void Destroy()
 void* GetRenderer()
 int GetErrorCode()

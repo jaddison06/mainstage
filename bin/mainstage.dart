@@ -3,7 +3,7 @@ import 'widgets/colour.dart';
 
 import 'widgets/centreSquare.dart';
 import 'widgets/splineDrawer.dart';
-import 'widgets/keyboardPrinter.dart';
+import 'widgets/eventPrinter.dart';
 import 'widgets/text.dart';
 
 void main() {
@@ -24,10 +24,8 @@ void main() {
   ));
 
   //app.addWidget(Text(x: 30, y: 30, text: 'Penis lol', col: Colour(255, 255, 0)));
-
-  //app.addWidget(KeyboardPrinter());
+  
+  app.addWidget(EventPrinter());
   
   app.runApp();
-
-  app.destroy();
 }

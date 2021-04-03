@@ -13,6 +13,7 @@ class MainstageApp {
   late CreateEventSig _initEvent;
   
   Map<KeyCode, bool> _pressedKeys = {};
+  Map<MouseButton, bool> _pressedMouseButtons = {};
   
   late Pointer<Int32> _eventPtrX;
   late Pointer<Int32> _eventPtrY;
@@ -32,12 +33,15 @@ class MainstageApp {
     for (var key in KeyCode.values) {
       _pressedKeys[key] = false;
     }
+    for (var btn in MouseButton.values) {
+      _pressedMouseButtons[btn] = false;
+    }
   }
 
   void runApp() {
     final event = cEvent();
     event.structPointer = _initEvent();
-
+    
     var eType = SDLEventType.NotImplemented; // call it null
 
     while (eType != SDLEventType.Quit) {
@@ -63,7 +67,7 @@ class MainstageApp {
           for (var widget in _widgets) {
             widget.OnMouseMove(x, y);
           }
-
+          
           break;
         }
         case SDLEventType.MouseDown:
@@ -72,18 +76,29 @@ class MainstageApp {
           final x = _eventPtrX.value;
           final y = _eventPtrY.value;
           
-          for (var widget in _widgets) {
-            if (eType == SDLEventType.MouseDown) {
-              widget.OnMouseDown(x, y, button);
-            } else {
-              widget.OnMouseUp(x, y, button);
+          if (button != MouseButton.Unknown) {
+            if (eType == SDLEventType.MouseDown && !_pressedMouseButtons[button]!) {
+              for (var widget in _widgets) {
+                widget.OnMouseDown(x, y, button);
+              }
+              _pressedMouseButtons[button] = true;
+
+            } else if (eType == SDLEventType.MouseUp && _pressedMouseButtons[button]!) {
+              for (var widget in _widgets) {
+                widget.OnMouseUp(x, y, button);
+              }
+              _pressedMouseButtons[button] = false;
             }
           }
-
+          
           break;
         }
+        // todo (jaddison): use keymods to get abs values from system. Pull system keymap & do mods ourself?
+        // also impl weird ones like ,.\/|
         case SDLEventType.KeyDown: {
           final key = KeyCodeFromInt(event.GetKeyPressReleaseData());
+          if (key == KeyCode.Unknown) { break; }
+
           // double exclamation marks - ugly! We can assert the KeyCode? because the keys (pun intended) of _pressedKeys
           // are equal to KeyCode.values .
           //
@@ -101,11 +116,15 @@ class MainstageApp {
         }
         case SDLEventType.KeyUp: {
           final key = KeyCodeFromInt(event.GetKeyPressReleaseData());
-          for (var widget in _widgets) {
-            widget.OnKeyUp(key);
-          }
+          if (key == KeyCode.Unknown) { break; }
 
-          _pressedKeys[key] = false;
+          if (_pressedKeys[key]!) {
+            for (var widget in _widgets) {
+              widget.OnKeyUp(key);
+            }
+            
+            _pressedKeys[key] = false;
+          }
 
           break;
         }
@@ -120,9 +139,11 @@ class MainstageApp {
       _win.Flush();
       event.Poll();
       eType = SDLEventTypeFromInt(event.GetType());
+      
     }
 
     event.Destroy();
+    destroy();
   }
   
   void addWidget(Widget widget) {

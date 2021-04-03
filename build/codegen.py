@@ -78,6 +78,8 @@ def enums():
 
 # todo (jaddison): refactor ffigen to a slightly nicer layout
 
+# todo (jaddison): enum C return types w/ automatic conversion
+
 def get_native_type(type):
     out = ""
 
@@ -237,7 +239,7 @@ def generate_dart_class(cclass_file_path):
     for method_name in methods:
         out += f"        _{method_name} = lib.lookupFunction<__class{class_name}{method_name}NativeSig, _class{class_name}{method_name}Sig>('{method_name}');\n"
     
-    out += "    }"
+    out += "    }\n"
 
     # methods
     for method_name, data in methods.items():
@@ -254,7 +256,8 @@ def generate_dart_class(cclass_file_path):
         
         out += ") {\n"
         out += f"        validatePointer('{method_name}');\n"
-        out += f"        return _{method_name}(structPointer, "
+        out += f"        return _{method_name}(structPointer"
+        if len(data["params"]) != 0: out += ", "
         for i in range(len(data["params"].keys())):
             param_name = list(data["params"].keys())[i]
             out += param_name
