@@ -128,10 +128,11 @@ def generate_dart_funcsig_typedefs(name, return_type, params, prefix=""):
 
     return out
 
-
-def generate_dart_ffi_utils(defs_file_lines):
+# TODO: include param names in the .defs file, so we can display them accurately in Dart code.
+# maybeeee we could unify .defs & .cclass? (or even .enum??????)
+def generate_dart_ffi_utils(class_name, defs_file_lines):
+    funcs = {}
     out = ""
-    
     for line in defs_file_lines:
         if line and not line.isspace():
             return_type_and_name, raw_params = line.split('(')
@@ -140,14 +141,66 @@ def generate_dart_ffi_utils(defs_file_lines):
                 lambda string: string.strip(),
                 raw_params[:-1].split(',')
             ))
+            funcs[name] = {
+                "return_type": return_type,
+                "params": params
+            }
 
-            out += generate_dart_funcsig_typedefs(name, return_type, params)
-            
-            out += f"\n{name}Sig lookup{name}(DynamicLibrary lib) "
+            # legacy way of doing things. Now we use classes to represent libs.           
+            '''out += f"\n{name}Sig lookup{name}(DynamicLibrary lib) "
             out += "{\n"
             out += f"    return lib.lookupFunction<_{name}NativeSig, {name}Sig>('{name}');\n"
             out += "}\n\n"
+            '''
+            
+    # typedefs 
+    for f, data in funcs.items():
+        out += generate_dart_funcsig_typedefs(f, data["return_type"], data["params"], "_")
     
+    # class header
+    out += f"class Lib{class_name} "
+    out += "{\n"
+    
+    # ffi funcs
+    for f, data in funcs.items():
+        out += f"    late _{f}Sig _{f};\n"
+    out += "\n"
+    
+    # constructor
+    out += f"    Lib{class_name}() "
+    out += "{\n"
+    # the fun thing about this is that the lib will only be read off disk once, so we can
+    # call the constructor as much as we want w/ relatively little overhead. so instead of
+    # passing around a single instance of LibSomething so we can call functions from it, we can
+    # just call LibSomething().SomeFunction() wherever it's needed. There's still overhead from function
+    # lookup, but overall it's not that bad.
+    # https://api.dart.dev/stable/2.10.1/dart-ffi/DynamicLibrary/DynamicLibrary.open.html
+    out += f"        final lib = getLibrary('{class_name}.c');\n\n"
+    for f, data in funcs.items():
+        out += f"        _{f} = lib.lookupFunction<__{f}NativeSig, _{f}Sig>('{f}');\n"
+    out += "    }\n"
+
+    # actual callable funcs
+    for f, data in funcs.items():
+        out += f"    {get_dart_type(data['return_type'])} {f}("
+        if data['params'] != ['']: # what the fuck
+            for i in range(len(data["params"])):
+                out += f"{get_dart_type(data['params'][i])} arg{i}"
+                if i != len(data["params"]) - 1: out += ", "
+        out += ") {\n"
+        out += f"        return _{f}("
+        # lmao abstraction who?
+        if data['params'] != ['']: # what the fuck
+            for i in range(len(data["params"])):
+                out += f"arg{i}"
+                if i != len(data["params"]) - 1: out += ", "
+        out += ");\n"
+        out += "    }\n"
+    
+    
+    # close class
+    out += "}\n\n"
+
     return out
 
 
@@ -289,12 +342,12 @@ def main():
     
     c_header += "#endif // C_CODEGEN_H"
 
-    dart_file += generate_decl("ffi: generated functions")
+    dart_file += generate_decl("ffi: generated classes for C function libraries")
     for f in get_all_files_with_extension(C_CODE_DIR, "defs"):
         name_without_extension = path.splitext(f)[0]
-        dart_file += generate_dart_ffi_utils(get_file(name_without_extension, 'defs'))
+        dart_file += generate_dart_ffi_utils(path.basename(name_without_extension), get_file(name_without_extension, 'defs'))
     
-    dart_file += generate_decl("ffi: generated classes")
+    dart_file += generate_decl("ffi: generated classes for C structs")
     for f in get_all_files_with_extension(C_CODE_DIR, "cclass"):
         dart_file += generate_dart_class(f)
     

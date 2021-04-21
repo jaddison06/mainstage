@@ -14,10 +14,8 @@ class RenderWindow extends cRenderWindow {
     String fontFile,
     int fontSize
   ) {
-    final libRW = getLibrary('RenderWindow.c');
-    final initRW = lookupInitRenderWindow(libRW);
     
-    structPointer = initRW(
+    structPointer = LibRenderWindow().InitRenderWindow(
       title.toNativeUtf8(),
       width,
       height,

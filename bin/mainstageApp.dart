@@ -2,7 +2,6 @@ import 'widgets/widget.dart';
 import 'renderWindow.dart';
 import 'dart_codegen.dart';
 import 'widgets/colour.dart';
-import 'getLibrary.dart';
 import 'dart:ffi';
 import 'package:ffi/ffi.dart';
 import 'platformRenderer.dart';
@@ -10,7 +9,6 @@ import 'platformRenderer.dart';
 class MainstageApp {
   final List<Widget> _widgets = [];
   late RenderWindow _win;
-  late CreateEventSig _initEvent;
   
   final Map<KeyCode, bool> _pressedKeys = {};
   final Map<MouseButton, bool> _pressedMouseButtons = {};
@@ -19,9 +17,6 @@ class MainstageApp {
   late Pointer<Int32> _eventPtrY;
 
   MainstageApp({required String title, required Colour backgroundCol, required String fontFile, int fontSize = 18}) {
-    final libEvent = getLibrary('Event.c');
-    _initEvent = lookupCreateEvent(libEvent);
-    
     _win = RenderWindow(title, 500, 500, backgroundCol, fontFile, fontSize);
     
     // event methods that need to return x & y do so by modifying pointers.
@@ -40,7 +35,7 @@ class MainstageApp {
 
   void runApp() {
     final event = cEvent();
-    event.structPointer = _initEvent();
+    event.structPointer = LibEvent().CreateEvent();
     
     var eType = SDLEventType.NotImplemented; // call it null
 

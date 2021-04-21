@@ -483,27 +483,43 @@ String SDLInitErrorCodeToString(SDLInitErrorCode val) {
     return '';
 }
 
-// ----- FFI: GENERATED FUNCTIONS -----
+// ----- FFI: GENERATED CLASSES FOR C FUNCTION LIBRARIES -----
 
 
-typedef _CreateEventNativeSig = Pointer<Void> Function();
+typedef __CreateEventNativeSig = Pointer<Void> Function();
 
-typedef CreateEventSig = Pointer<Void> Function();
+typedef _CreateEventSig = Pointer<Void> Function();
+class LibEvent {
+    late _CreateEventSig _CreateEvent;
 
-CreateEventSig lookupCreateEvent(DynamicLibrary lib) {
-    return lib.lookupFunction<_CreateEventNativeSig, CreateEventSig>('CreateEvent');
+    LibEvent() {
+        final lib = getLibrary('Event.c');
+
+        _CreateEvent = lib.lookupFunction<__CreateEventNativeSig, _CreateEventSig>('CreateEvent');
+    }
+    Pointer<Void> CreateEvent() {
+        return _CreateEvent();
+    }
 }
 
 
-typedef _InitRenderWindowNativeSig = Pointer<Void> Function(Pointer<Utf8>, Int32, Int32, Int32, Int32, Int32);
+typedef __InitRenderWindowNativeSig = Pointer<Void> Function(Pointer<Utf8>, Int32, Int32, Int32, Int32, Int32);
 
-typedef InitRenderWindowSig = Pointer<Void> Function(Pointer<Utf8>, int, int, int, int, int);
+typedef _InitRenderWindowSig = Pointer<Void> Function(Pointer<Utf8>, int, int, int, int, int);
+class LibRenderWindow {
+    late _InitRenderWindowSig _InitRenderWindow;
 
-InitRenderWindowSig lookupInitRenderWindow(DynamicLibrary lib) {
-    return lib.lookupFunction<_InitRenderWindowNativeSig, InitRenderWindowSig>('InitRenderWindow');
+    LibRenderWindow() {
+        final lib = getLibrary('RenderWindow.c');
+
+        _InitRenderWindow = lib.lookupFunction<__InitRenderWindowNativeSig, _InitRenderWindowSig>('InitRenderWindow');
+    }
+    Pointer<Void> InitRenderWindow(Pointer<Utf8> arg0, int arg1, int arg2, int arg3, int arg4, int arg5) {
+        return _InitRenderWindow(arg0, arg1, arg2, arg3, arg4, arg5);
+    }
 }
 
-// ----- FFI: GENERATED CLASSES -----
+// ----- FFI: GENERATED CLASSES FOR C STRUCTS -----
 
 
 typedef __classcEventPollNativeSig = Void Function(Pointer<Void>);
