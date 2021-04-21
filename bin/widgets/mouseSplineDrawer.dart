@@ -6,9 +6,6 @@ import 'colour.dart';
 import 'dart:math';
 import './splineDrawer.dart';
 
-import 'curves/bezierCurve.dart';
-import 'curves/dynamicBezier.dart';
-
 class MouseSplineDrawer extends Widget {
   final int _size = 10;
   late SplineDrawer _drawer;
@@ -93,16 +90,13 @@ class MouseSplineDrawer extends Widget {
       _drawer.addPoint(_temporaryPoint!);
     }
     
-    setWinColour(win, col);
+    win.SetColour(col);
     for (var point in _drawer.points) {
       win.FillRect(point.getAbsoluteX(width) - (_size ~/ 2), point.getAbsoluteY(height) - (_size ~/ 2), _size, _size);
     }
     
     initChild(_drawer);
-
-    // unless i'm mistaken, worst-case is a diagonal, so set that to the resolution (& double it to be safe)
-    _drawer.resolution = sqrt(pow(width, 2) + pow(height, 2)).toInt() * 1;
-    _drawer.resolution = 60;
+    
     _drawer.DrawDesktop(win);
   
     if (_temporaryPoint != null) {

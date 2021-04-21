@@ -87,13 +87,14 @@ int GetHeight(RenderWindow *win) {
     return win->height;
 }
 
-void SetColour(RenderWindow *win, int r, int g, int b, int alpha) {
+// "c" so we can define a separate SetColour which uses a Dart Colour class
+void cSetColour(RenderWindow *win, int r, int g, int b, int alpha) {
     SDL_SetRenderDrawColor(win->ren, r, g, b, alpha);
 }
 
 void Flush(RenderWindow *win) {
     SDL_RenderPresent(win->ren);
-    SetColour(win, win->backgroundRed, win->backgroundGreen, win->backgroundBlue, SDL_ALPHA_OPAQUE);
+    cSetColour(win, win->backgroundRed, win->backgroundGreen, win->backgroundBlue, SDL_ALPHA_OPAQUE);
     SDL_RenderClear(win->ren);
 
     win->frameCount++;
@@ -111,7 +112,7 @@ void SetFullscreen(RenderWindow *win, int enable) {
     }
 }
 
-void DrawPoint(RenderWindow *win, int x, int y) {
+void cDrawPoint(RenderWindow *win, int x, int y) {
     SDL_RenderDrawPoint(win->ren, x, y);
 }
 

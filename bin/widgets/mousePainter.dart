@@ -13,13 +13,13 @@ class MousePainter extends Widget {
 
   @override
   void DrawDesktop(RenderWindow win) {
-    setWinColour(win, col);
+    win.SetColour(col);
     final width = win.GetWidth();
     final height = win.GetHeight();
     for (var point in _points) {
       final xScale = width / point.winX;
       final yScale = height / point.winY;
-      win.DrawPoint((point.x * xScale).toInt(), (point.y * yScale).toInt());
+      win.cDrawPoint((point.x * xScale).toInt(), (point.y * yScale).toInt());
     }
   }
   

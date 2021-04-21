@@ -4,17 +4,14 @@ import 'point.dart';
 import 'colour.dart';
 import 'dart:math';
 
-import 'curves/bezierCurve.dart';
-import 'curves/dynamicBezier.dart';
+import 'bezierCurve.dart';
 
 class SplineDrawer extends Widget {
   final bool showConstructionLines;
   final List<Point> _points = [];
   final Colour col;
-
-  int resolution;
   
-  SplineDrawer({required this.col, required this.showConstructionLines, this.resolution = 100});
+  SplineDrawer({required this.col, required this.showConstructionLines});
 
   void addPoint(Point point) => _points.add(point);
   void setPoint(int index, Point newPoint) => _points[index] = newPoint;
@@ -29,15 +26,15 @@ class SplineDrawer extends Widget {
     BezierCurve? curve;
     
     if (_points.isNotEmpty) {
-      curve = DynamicBezier(_points.toList(), resolution);
-      curve.showConstructionLines = showConstructionLines;
+        // unless i'm mistaken, worst-case is a diagonal, so set that to the resolution (& double it to be safe)
+      final resolution = sqrt(pow(renderer.GetWidth(), 2) + pow(renderer.GetHeight(), 2)).toInt() * 1;
+      curve = BezierCurve(_points.toList(), resolution, col, showConstructionLines);
     }
     
     if (curve != null) {
       initChild(curve);
     }
     
-    curve?.col = col;
     curve?.DrawDesktop(win);
     
   }

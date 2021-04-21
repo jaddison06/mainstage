@@ -655,9 +655,9 @@ typedef __classcRenderWindowGetHeightNativeSig = Int32 Function(Pointer<Void>);
 typedef _classcRenderWindowGetHeightSig = int Function(Pointer<Void>);
 
 
-typedef __classcRenderWindowSetColourNativeSig = Void Function(Pointer<Void>, Int32, Int32, Int32, Int32);
+typedef __classcRenderWindowcSetColourNativeSig = Void Function(Pointer<Void>, Int32, Int32, Int32, Int32);
 
-typedef _classcRenderWindowSetColourSig = void Function(Pointer<Void>, int, int, int, int);
+typedef _classcRenderWindowcSetColourSig = void Function(Pointer<Void>, int, int, int, int);
 
 
 typedef __classcRenderWindowFlushNativeSig = Void Function(Pointer<Void>);
@@ -675,9 +675,9 @@ typedef __classcRenderWindowSetFullscreenNativeSig = Void Function(Pointer<Void>
 typedef _classcRenderWindowSetFullscreenSig = void Function(Pointer<Void>, int);
 
 
-typedef __classcRenderWindowDrawPointNativeSig = Void Function(Pointer<Void>, Int32, Int32);
+typedef __classcRenderWindowcDrawPointNativeSig = Void Function(Pointer<Void>, Int32, Int32);
 
-typedef _classcRenderWindowDrawPointSig = void Function(Pointer<Void>, int, int);
+typedef _classcRenderWindowcDrawPointSig = void Function(Pointer<Void>, int, int);
 
 
 typedef __classcRenderWindowDrawLineNativeSig = Void Function(Pointer<Void>, Int32, Int32, Int32, Int32);
@@ -711,11 +711,11 @@ class cRenderWindow {
     late _classcRenderWindowUpdateDimensionsSig _UpdateDimensions;
     late _classcRenderWindowGetWidthSig _GetWidth;
     late _classcRenderWindowGetHeightSig _GetHeight;
-    late _classcRenderWindowSetColourSig _SetColour;
+    late _classcRenderWindowcSetColourSig _cSetColour;
     late _classcRenderWindowFlushSig _Flush;
     late _classcRenderWindowGetFrameCountSig _GetFrameCount;
     late _classcRenderWindowSetFullscreenSig _SetFullscreen;
-    late _classcRenderWindowDrawPointSig _DrawPoint;
+    late _classcRenderWindowcDrawPointSig _cDrawPoint;
     late _classcRenderWindowDrawLineSig _DrawLine;
     late _classcRenderWindowDrawRectSig _DrawRect;
     late _classcRenderWindowFillRectSig _FillRect;
@@ -729,11 +729,11 @@ class cRenderWindow {
         _UpdateDimensions = lib.lookupFunction<__classcRenderWindowUpdateDimensionsNativeSig, _classcRenderWindowUpdateDimensionsSig>('UpdateDimensions');
         _GetWidth = lib.lookupFunction<__classcRenderWindowGetWidthNativeSig, _classcRenderWindowGetWidthSig>('GetWidth');
         _GetHeight = lib.lookupFunction<__classcRenderWindowGetHeightNativeSig, _classcRenderWindowGetHeightSig>('GetHeight');
-        _SetColour = lib.lookupFunction<__classcRenderWindowSetColourNativeSig, _classcRenderWindowSetColourSig>('SetColour');
+        _cSetColour = lib.lookupFunction<__classcRenderWindowcSetColourNativeSig, _classcRenderWindowcSetColourSig>('cSetColour');
         _Flush = lib.lookupFunction<__classcRenderWindowFlushNativeSig, _classcRenderWindowFlushSig>('Flush');
         _GetFrameCount = lib.lookupFunction<__classcRenderWindowGetFrameCountNativeSig, _classcRenderWindowGetFrameCountSig>('GetFrameCount');
         _SetFullscreen = lib.lookupFunction<__classcRenderWindowSetFullscreenNativeSig, _classcRenderWindowSetFullscreenSig>('SetFullscreen');
-        _DrawPoint = lib.lookupFunction<__classcRenderWindowDrawPointNativeSig, _classcRenderWindowDrawPointSig>('DrawPoint');
+        _cDrawPoint = lib.lookupFunction<__classcRenderWindowcDrawPointNativeSig, _classcRenderWindowcDrawPointSig>('cDrawPoint');
         _DrawLine = lib.lookupFunction<__classcRenderWindowDrawLineNativeSig, _classcRenderWindowDrawLineSig>('DrawLine');
         _DrawRect = lib.lookupFunction<__classcRenderWindowDrawRectNativeSig, _classcRenderWindowDrawRectSig>('DrawRect');
         _FillRect = lib.lookupFunction<__classcRenderWindowFillRectNativeSig, _classcRenderWindowFillRectSig>('FillRect');
@@ -769,9 +769,9 @@ class cRenderWindow {
         return _GetHeight(structPointer);
     }
 
-     void SetColour(int r, int g, int b, int alpha) {
-        validatePointer('SetColour');
-        return _SetColour(structPointer, r, g, b, alpha);
+     void cSetColour(int r, int g, int b, int alpha) {
+        validatePointer('cSetColour');
+        return _cSetColour(structPointer, r, g, b, alpha);
     }
 
      void Flush() {
@@ -789,9 +789,9 @@ class cRenderWindow {
         return _SetFullscreen(structPointer, enable);
     }
 
-     void DrawPoint(int x, int y) {
-        validatePointer('DrawPoint');
-        return _DrawPoint(structPointer, x, y);
+     void cDrawPoint(int x, int y) {
+        validatePointer('cDrawPoint');
+        return _cDrawPoint(structPointer, x, y);
     }
 
      void DrawLine(int x1, int y1, int x2, int y2) {

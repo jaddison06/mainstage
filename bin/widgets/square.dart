@@ -11,7 +11,7 @@ class Square extends Widget {
 
   @override
   void DrawDesktop(RenderWindow win) {
-    setWinColour(win, fillColour);
+    win.SetColour(fillColour);
     win.FillRect(x, y, size, size);
   }
 }

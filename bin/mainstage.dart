@@ -21,10 +21,10 @@ void main() {
   
   app.addWidget(MouseSplineDrawer(
     col: Colour.yellow,
-    showConstructionLines: true
+    showConstructionLines: false
   ));
 
-  //app.addWidget(Text(x: 30, y: 30, text: 'Penis lol', col: Colour.yellow));
+  app.addWidget(Text(x: 30, y: 30, text: 'Penis lol', col: Colour.yellow));
   
   app.addWidget(EventPrinter());
   

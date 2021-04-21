@@ -1,6 +1,5 @@
 import '../renderWindow.dart';
 import '../mainstagePlatform.dart';
-import 'colour.dart';
 import '../platformRenderer.dart';
 import '../dart_codegen.dart';
 
@@ -62,11 +61,6 @@ class Widget {
   void OnKeyUp(KeyCode key) {}
   
   // utility functions
-  
-  // set from a Colour
-  void setWinColour(RenderWindow win, Colour col, [int alpha = 255]) {
-    win.SetColour(col.r, col.g, col.b, alpha);
-  }
   
   // if we're drawing child widgets, init them with the necessary stuff
   // todo (jaddison): does this need to be called once, or repeatedly?

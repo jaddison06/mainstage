@@ -1,8 +1,8 @@
 import 'dart_codegen.dart';
 import 'widgets/colour.dart';
 import 'package:ffi/ffi.dart';
-import 'getLibrary.dart';
 import 'dart:io';
+import 'widgets/point.dart';
 
 class RenderWindow extends cRenderWindow {
 
@@ -33,8 +33,16 @@ class RenderWindow extends cRenderWindow {
   
   }
 
+  void DrawPoint(Point p) {
+    cDrawPoint(p.x, p.y);
+  }
+
+  void SetColour(Colour c) {
+    cSetColour(c.r, c.g, c.b, 255);
+  }
+  
   void DrawText(String text, int x, int y, Colour col, [int alpha = 255]) {
-    print(text);
+
   }
 
 }
