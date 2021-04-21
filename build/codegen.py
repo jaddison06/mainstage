@@ -1,6 +1,29 @@
 from util import *
 import os.path as path
 
+class Function:
+    def __init__(self, name, return_type, params):
+        self.name = name
+        self.return_type = return_type
+        # params should be {"param_name": "param_type"}
+        self.params = params
+    
+    def clone(self):
+        return Function(self.name, self.return_type, self.params.copy())
+    
+    def with_attr(self, k, v):
+        new = self.clone()
+        new.__setattr__(k, v)
+        return new
+    
+    def __repr__(self):
+        out = f"Function: {self.return_type} {self.name}("
+        for i, k in enumerate(self.params.keys()):
+            out += f"{self.params[k]} {k}"
+            if i != len(self.params) - 1: out += ", "
+        out += ")"
+        return out
+
 # todo (jaddison): consistent arg formatting (atm fnames are just being passed around willy nilly)
 
 def get_file(name, ext):
@@ -109,65 +132,45 @@ def get_dart_type(type):
     if is_pointer: out = f"Pointer<{out}>"
     return out
 
-def generate_dart_funcsig_typedefs(name, return_type, params, prefix=""):
+def generate_dart_funcsig_typedefs(func, prefix=""):
+    param_types = func.params.values()
     out = ""
-    out += f"\ntypedef _{prefix}{name}NativeSig = {get_native_type(return_type)} Function("
+    out += f"\ntypedef _{prefix}{func.name}NativeSig = {get_native_type(func.return_type)} Function("
     # if there aren't any params, we get [''] for some reason
-    if params != ['']:
-        # if there are multiple params of the same type, they'll all be equal to params[-1], so we have to enumerate.
-        for i, param in enumerate(params):
-            out += get_native_type(param)
-            if i != len(params) -1: out += ', '
+    for i, param in enumerate(param_types):
+        out += get_native_type(param)
+        if i != len(param_types) -1: out += ', '
+    
     out += ");\n"
-    out += f"\ntypedef {prefix}{name}Sig = {get_dart_type(return_type)} Function("
-    if params != ['']:
-        for i, param in enumerate(params):
+    out += f"\ntypedef {prefix}{func.name}Sig = {get_dart_type(func.return_type)} Function("
+    if param_types != ['']:
+        for i, param in enumerate(param_types):
             out += get_dart_type(param)
-            if i != len(params) - 1: out += ', '
+            if i != len(param_types) - 1: out += ', '
     out += ");\n"
 
     return out
 
 # TODO: include param names in the .defs file, so we can display them accurately in Dart code.
 # maybeeee we could unify .defs & .cclass? (or even .enum??????)
-def generate_dart_ffi_utils(class_name, defs_file_lines):
-    funcs = {}
+def generate_dart_ffi_utils(lib_name, funcs):
     out = ""
-    for line in defs_file_lines:
-        if line and not line.isspace():
-            return_type_and_name, raw_params = line.split('(')
-            return_type, name = return_type_and_name.split(' ')
-            params = list(map(
-                lambda string: string.strip(),
-                raw_params[:-1].split(',')
-            ))
-            funcs[name] = {
-                "return_type": return_type,
-                "params": params
-            }
 
-            # legacy way of doing things. Now we use classes to represent libs.           
-            '''out += f"\n{name}Sig lookup{name}(DynamicLibrary lib) "
-            out += "{\n"
-            out += f"    return lib.lookupFunction<_{name}NativeSig, {name}Sig>('{name}');\n"
-            out += "}\n\n"
-            '''
-            
     # typedefs 
-    for f, data in funcs.items():
-        out += generate_dart_funcsig_typedefs(f, data["return_type"], data["params"], "_")
+    for f in funcs:
+        out += generate_dart_funcsig_typedefs(f, "_")
     
     # class header
-    out += f"class Lib{class_name} "
+    out += f"class Lib{lib_name} "
     out += "{\n"
     
     # ffi funcs
-    for f, data in funcs.items():
-        out += f"    late _{f}Sig _{f};\n"
+    for f in funcs:
+        out += f"    late _{f.name}Sig _{f.name};\n"
     out += "\n"
     
     # constructor
-    out += f"    Lib{class_name}() "
+    out += f"    Lib{lib_name}() "
     out += "{\n"
     # the fun thing about this is that the lib will only be read off disk once, so we can
     # call the constructor as much as we want w/ relatively little overhead. so instead of
@@ -175,103 +178,54 @@ def generate_dart_ffi_utils(class_name, defs_file_lines):
     # just call LibSomething().SomeFunction() wherever it's needed. There's still overhead from function
     # lookup, but overall it's not that bad.
     # https://api.dart.dev/stable/2.10.1/dart-ffi/DynamicLibrary/DynamicLibrary.open.html
-    out += f"        final lib = getLibrary('{class_name}.c');\n\n"
-    for f, data in funcs.items():
-        out += f"        _{f} = lib.lookupFunction<__{f}NativeSig, _{f}Sig>('{f}');\n"
+    out += f"        final lib = getLibrary('{lib_name}.c');\n\n"
+    for f in funcs:
+        out += f"        _{f.name} = lib.lookupFunction<__{f.name}NativeSig, _{f.name}Sig>('{f.name}');\n"
     out += "    }\n"
-
+    
     # actual callable funcs
-    for f, data in funcs.items():
-        out += f"    {get_dart_type(data['return_type'])} {f}("
-        if data['params'] != ['']: # what the fuck
-            for i in range(len(data["params"])):
-                out += f"{get_dart_type(data['params'][i])} arg{i}"
-                if i != len(data["params"]) - 1: out += ", "
+    for f in funcs:
+        out += f"    {get_dart_type(f.return_type)} {f.name}("
+        for i in range(len(f.param)):
+            out += f"{get_dart_type(f.params[i])} arg{i}"
+            if i != len(f.params) - 1: out += ", "
         out += ") {\n"
-        out += f"        return _{f}("
-        # lmao abstraction who?
-        if data['params'] != ['']: # what the fuck
-            for i in range(len(data["params"])):
-                out += f"arg{i}"
-                if i != len(data["params"]) - 1: out += ", "
+        out += f"        return _{f.name}("
+        for i in range(len(f.params)):
+            out += f"arg{i}"
+            if i != len(f.params) - 1: out += ", "
         out += ");\n"
         out += "    }\n"
     
     
     # close class
     out += "}\n\n"
-
+    
     return out
 
+# todo (jaddison): automatic usage of String instead of Pointer<Utf8> (w/ conversion)
 
-# output should look like this:
-# typedef _cClassClassNameMethodNameNativeSig Void Function(Pointer<Void>, int)
-# typedef _cClassClassNameMethodNameSig void Function(Pointer<Void>, int)
-#
-# class ClassName {
-#   Pointer<Void> structPointer;
-#
-#   void validatePointer(String methodName) {
-#       if (structPointer.address == 0) {
-#           throw Exception('ClassName.$methodName was called, but structPointer is a nullptr.');
-#       }
-#   }
-#
-#   late _cClassClassNameMethodNameSig _MethodName;
-#
-#   ClassName() {
-#       lib = getLibrary(CFileName);
-#       _methodName = lib.lookupFunction<_cClassClassNameMethodNameNativeSig, _cClassClassNameMethodNmeSig>(MethodName);
-#   }
-#
-#   
-#   MethodReturnType MethodName(args...) {
-#       validatePointer(MethodName);
-#       _MethodName(structPointer, args...);
-#   }
-#
-# }
-def generate_dart_class(cclass_file_path):
-    full_name, ext = path.splitext(cclass_file_path)
-    ext = ext[1:]
-    class_name = "c" + path.basename(full_name)
-    lines = get_file(full_name, ext)
-    
-    c_fname = class_name[1:] + ".c"
-    
+# methods should be array of Functions
+def generate_dart_class(class_name, methods, initializer = None):
     out = ""
 
-    methods = {}
-    
-    for line in lines:
-        if line and not line.isspace():
-            type_and_name, raw_params = line.split('(')
-            raw_params = raw_params[:-1]
-            type, method_name = type_and_name.split(' ')
-            
-            methods[method_name] = {
-                "return_type": type,
-                "params": {}
-            }
-            
-            params = raw_params.split(',')
-            if params != ['']:
-                for param in params:
-                    param_type, param_name = param.strip().split(' ')
-                    
-                    # if it's a pointer type, we assume it looks like "int* someParam", not "int *someParam" or "int * someParam"
-                    methods[method_name]["params"][param_name] = param_type
-
     # funcsig typedefs
-
-    for method_name, data in methods.items():
-        param_types = ['void*'] + [param_type for param_type in data["params"].values()]
-        out += generate_dart_funcsig_typedefs(method_name, data["return_type"], param_types, f"_class{class_name}")
+    
+    for method in methods:
+        # make sure "self" comes first
+        params = {'self': 'void*'}
+        for k, v in method.params.items():
+            params[k] = v
+        
+        out += generate_dart_funcsig_typedefs(method.with_attr("params", params), f"_class{class_name}")
         out += "\n"
+    
+    if initializer:
+        out += generate_dart_funcsig_typedefs(initializer, "_")
     
     # class boilerplate
 
-    out += f"\n\nclass {class_name} "
+    out += f"\n\nclass c{class_name} "
     out += "{\n    Pointer<Void> structPointer = Pointer.fromAddress(0);\n\n"
     out += "    void validatePointer(String methodName) {\n"
     out += "        if (structPointer.address == 0) {\n"
@@ -280,42 +234,56 @@ def generate_dart_class(cclass_file_path):
 
     # members
 
-    for method_name in methods:
+    for method in methods:
         # todo (jaddison): does this need to be late?
-        out += f"    late _class{class_name}{method_name}Sig _{method_name};\n"
+        out += f"    late _class{class_name}{method.name}Sig _{method.name};\n"
     
     # constructor
-    out += f"\n    {class_name}() "
-    out += "{\n"
-    out += f"        final lib = getLibrary('{c_fname}');\n\n"
+    out += f"\n    c{class_name}("
+    if initializer:
+        for i, k in enumerate(initializer.params.keys()):
+            out += f"{get_dart_type(initializer.params[k])} {k}"
+            if i != len(initializer.params) - 1: out += ", "
+    out += ") "
 
-    for method_name in methods:
-        out += f"        _{method_name} = lib.lookupFunction<__class{class_name}{method_name}NativeSig, _class{class_name}{method_name}Sig>('{method_name}');\n"
+    out += "{\n"
+    out += f"        final lib = getLibrary('{class_name}.c');\n\n"
+
+    for method in methods:
+        out += f"        _{method.name} = lib.lookupFunction<__class{class_name}{method.name}NativeSig, _class{class_name}{method.name}Sig>('{method.name}');\n"
+    
+    if initializer:
+        out += f"\n        structPointer = (lib.lookupFunction<__{initializer.name}NativeSig, _{initializer.name}Sig>('{initializer.name}'))("
+        for i, k in enumerate(initializer.params.keys()):
+            out += k
+            if i != len(initializer.params.keys()) - 1: out += ", "
+        out += ");\n"
+
     
     out += "    }\n"
 
     # methods
-    for method_name, data in methods.items():
-        out += f"\n     {get_dart_type(data['return_type'])} {method_name}("
-        for i in range(len(data["params"].keys())):
-            param_name = list(data["params"].keys())[i]
-            param_type = data["params"][param_name]
+    for method in methods:
+        out += f"\n     {get_dart_type(method.return_type)} {method.name}("
+        for i in range(len(method.params.keys())):
+            param_name = list(method.params.keys())[i]
+            param_type = method.params[param_name]
             
             out += get_dart_type(param_type)
             out += " "
             out += param_name
 
-            if i != len(data["params"].keys())-1: out += ", "
+            if i != len(method.params.keys())-1: out += ", "
         
         out += ") {\n"
-        out += f"        validatePointer('{method_name}');\n"
-        out += f"        return _{method_name}(structPointer"
-        if len(data["params"]) != 0: out += ", "
-        for i in range(len(data["params"].keys())):
-            param_name = list(data["params"].keys())[i]
+        out += f"        validatePointer('{method.name}');\n"
+        out += f"        return _{method.name}(structPointer"
+        if len(method.params) != 0: out += ", "
+        for i in range(len(method.params.keys())):
+            param_name = list(method.params.keys())[i]
             out += param_name
-
-            if i != len(data["params"].keys())-1: out += ", "
+            
+            if i != len(method.params.keys())-1: out += ", "
         out += ");\n"
         out += "    }\n"
     
@@ -323,6 +291,87 @@ def generate_dart_class(cclass_file_path):
     
     return out
 
+def get_function(line):
+    type_and_name, raw_params = line.split('(')
+    raw_params = raw_params[:-1]
+    return_type, func_name = type_and_name.split(' ')
+
+    params = {}
+    
+    param_strings = raw_params.split(',')
+    if param_strings != ['']:
+        for param in param_strings:
+            param_type, param_name = param.strip().split(' ')
+            
+            # if it's a pointer type, we assume it looks like "int* someParam", not "int *someParam" or "int * someParam"
+            params[param_name] = param_type
+    
+    return Function(func_name, return_type, params)
+
+def generate_dart_ffi_stuff(fname):
+    out = ""
+    lines = list(map(
+        lambda line: line.strip(),
+        get_lines(fname)
+    ))
+
+    funcs = []
+    classes = {} # {"class_name": {"methods": [Function(), Function()], "initializer": Function() or None}}
+
+    current_class_name = ""
+    current_metadata = ""
+    
+    for line in lines:
+        if line and not line.isspace() and not line.startswith("//"):
+            if "//" in line:
+                line = line.split("//")[0]
+            
+            is_initializer = False
+            if line.startswith("@"):
+                # yoooo he got metadata n everything !!
+                current_metadata = line[1:]
+                continue
+            
+            if (
+                line.startswith("class") and 
+                current_class_name == "" and
+                line.endswith("{")
+            ):
+                current_class_name = line[5:][:-1].strip()
+                continue
+
+            if line == "}":
+                current_class_name = ""
+                continue
+            
+            func = get_function(line)
+            if current_class_name != "":
+                if not current_class_name in classes:
+                    classes[current_class_name] = {
+                        "methods": [],
+                        "initializer": None
+                    }
+                
+                if current_metadata == "initializer":
+                    classes[current_class_name]["initializer"] = func
+                else:
+                    classes[current_class_name]["methods"].append(func)
+            else:
+                funcs.append(func)
+            
+            current_metadata = ""
+    
+    lib_name = path.splitext(path.basename(fname))[0]
+    if funcs != []:
+        out += generate_decl(f"ffi: static functions for lib{lib_name}")
+        out += generate_dart_ffi_utils(lib_name, funcs)
+    if classes != {}:
+        out += generate_decl(f"ffi: generated classes for lib{lib_name}")
+        for c, data in classes.items():
+            out += generate_dart_class(c, data["methods"], data["initializer"])
+    
+
+    return out
 
 
 def generate_decl(name):
@@ -341,15 +390,9 @@ def main():
     c_header += c_enums
     
     c_header += "#endif // C_CODEGEN_H"
-
-    dart_file += generate_decl("ffi: generated classes for C function libraries")
-    for f in get_all_files_with_extension(C_CODE_DIR, "defs"):
-        name_without_extension = path.splitext(f)[0]
-        dart_file += generate_dart_ffi_utils(path.basename(name_without_extension), get_file(name_without_extension, 'defs'))
     
-    dart_file += generate_decl("ffi: generated classes for C structs")
-    for f in get_all_files_with_extension(C_CODE_DIR, "cclass"):
-        dart_file += generate_dart_class(f)
+    for fname in get_all_files_with_extension(C_CODE_DIR, "gen"):
+        dart_file += generate_dart_ffi_stuff(fname)
     
 
     with open(C_CODEGEN_FNAME, "wt") as fh: fh.write(c_header)

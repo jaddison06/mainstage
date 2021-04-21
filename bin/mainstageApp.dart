@@ -35,7 +35,6 @@ class MainstageApp {
 
   void runApp() {
     final event = cEvent();
-    event.structPointer = LibEvent().CreateEvent();
     
     var eType = SDLEventType.NotImplemented; // call it null
 

@@ -13,16 +13,14 @@ class RenderWindow extends cRenderWindow {
     Colour backgroundCol,
     String fontFile,
     int fontSize
+  ): super(
+    title.toNativeUtf8(),
+    width,
+    height,
+    backgroundCol.r,
+    backgroundCol.g,
+    backgroundCol.b
   ) {
-    
-    structPointer = LibRenderWindow().InitRenderWindow(
-      title.toNativeUtf8(),
-      width,
-      height,
-      backgroundCol.r,
-      backgroundCol.g,
-      backgroundCol.b
-    );
     
     final rwCode = SDLInitErrorCodeFromInt(GetErrorCode());
     if (rwCode != SDLInitErrorCode.Success) {

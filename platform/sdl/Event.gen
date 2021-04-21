@@ -1,0 +1,13 @@
+class Event {
+    @initializer
+    void* CreateEvent()
+
+    void Poll()
+    int GetType()
+    void Destroy()
+
+    void GetResizeData(int* newWidth, int* newHeight)
+    void GetMouseMoveData(int* x, int* y)
+    int GetMousePressReleaseData(int* x, int* y)
+    int GetKeyPressReleaseData()
+}
